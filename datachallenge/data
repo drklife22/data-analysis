@@ -6,11 +6,19 @@
 - 국제유가: WTI       | 한국석유공사 오피넷              | csv https://www.opinet.co.kr/glopcoilSelect.do
 - 소비자물가지수(CPI): 물가 > 소비자물가지수 https://ecos.bok.or.kr/#/SearchStat
 
+*추가하면 좋을 데이터: 중국 GDP(ECOS 501Y003), 미국 GDP
+
 종속변수
 - 월별 수출입 금액(전체,업종별,국가별) https://www.data.go.kr/data/15100475/openapi.do
+	-> 공공데이터 openapi의 한계로 https://tradedata.go.kr/cts/index.do 에서 받기로.. [단위] 톤(TON), 천 달러
 - 외국인 직접투자(FDI) 유치 동향 https://kosis.kr/statHtml/statHtml.do?sso=ok&returnurl=https%3A%2F%2Fkosis.kr%3A443%2FstatHtml%2FstatHtml.do%3Flist_id%3DS2_14%26obj_var_id%3D%26seqNo%3D%26tblId%3DDT_115_2009_H3001_18_1%26vw_cd%3DMT_ZTITLE%26orgId%3D115%26path%3D%252FstatisticsList%252FstatisticsListIndex.do%26conn_path%3DMT_ZTITLE%26itm_id%3D%26lang_mode%3Dko%26scrId%3D%26
 	또는 https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=1140
 	또는 https://www.data.go.kr/data/15088476/openapi.do
+
+	전체 FDI 추이 분석: 산업대분류=='계'
+	업종별 비교: 산업소분류=='소계'
+	세부 업종 분석: 소계 제외한 소분류 행
+
 - 업종별 수출 실적(반도체, 자동차, 석유화학 등) https://www.data.go.kr/data/15100475/openapi.do
 - 기업 상담 이력(상담 날짜, 유형) 
 - 사업 참여 이력(무역사절단, 수출 바우처 등) 
