@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>독일어 NVV 올인원 스마트 학습</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 680px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+        h2 { text-align: center; color: #2c3e50; margin-top: 0; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
+        .progress-bar { background-color: #e0e0e0; border-radius: 8px; height: 8px; width: 100%; margin-bottom: 25px; overflow: hidden; }
+        .progress { background-color: #3498db; height: 100%; width: 0%; transition: width 0.3s ease; }
+        
+        .type-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; margin-bottom: 12px; }
+        .badge-multi { background-color: #e67e22; }
+        .badge-write { background-color: #9b59b6; }
+        .badge-flash { background-color: #2ecc71; }
+        .badge-switch { background-color: #d35400; }
+        .badge-wrong { background-color: #c0392b; }
+        
+        .korean-hint { font-size: 18px; font-weight: 600; margin-bottom: 12px; color: #2c3e50; line-height: 1.5; }
+        .german-context { font-size: 17px; margin-bottom: 20px; line-height: 2.0; color: #333; white-space: pre-line; }
+        
+        .blank-input {
+            border: none;
+            border-bottom: 2px solid #3498db;
+            font-size: 17px;
+            font-weight: bold;
+            text-align: center;
+            color: #e74c3c;
+            padding: 2px 4px;
+            margin: 0 2px;
+            background: #f8f9fa;
+            border-radius: 4px 4px 0 0;
+        }
+        .blank-input:focus { outline: none; border-bottom-color: #2980b9; background: #eef7fc; }
+        
+        .full-textarea { width: 100%; height: 90px; padding: 12px; border: 2px solid #bdc3c7; border-radius: 8px; font-size: 16px; resize: none; box-sizing: border-box; font-family: inherit; margin-bottom: 15px; }
+        .full-textarea:focus { outline: none; border-color: #3498db; }
+        
+        .btn { display: block; width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; transition: background 0.2s; text-align: center; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-primary:hover { background-color: #2980b9; }
+        .btn-success { background-color: #2ecc71; color: white; }
+        .btn-success:hover { background-color: #27ae60; }
+        .btn-outline { background-color: white; color: #3498db; border: 2px solid #3498db; }
+        .btn-outline:hover { background-color: #f0f7fc; }
+        .btn-flash { background-color: #e74c3c; color: white; }
+        .btn-flash:hover { background-color: #c0392b; }
+        .btn-switch { background-color: #f39c12; color: white; }
+        .btn-switch:hover { background-color: #d68910; }
+        .btn-wrong { background-color: #8e44ad; color: white; }
+        .btn-wrong:hover { background-color: #732d91; }
+        .btn-secondary { background-color: #95a5a6; color: white; }
+        .btn-secondary:hover { background-color: #7f8c8d; }
+        
+        .btn-tts { display: inline-flex; align-items: center; justify-content: center; gap: 5px; width: auto; padding: 6px 12px; font-size: 13px; background-color: #ecf0f1; color: #2c3e50; border: 1px solid #bdc3c7; border-radius: 20px; margin-top: 5px; margin-bottom: 10px; cursor: pointer; }
+        .btn-tts:hover { background-color: #bdc3c7; }
+        
+        .result-box { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
+        .result-correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .result-wrong { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        
+        .setup-screen, .score-screen { text-align: center; }
+        .score-num { font-size: 48px; font-weight: bold; color: #2ecc71; margin: 20px 0; }
+        
+        .mode-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: #fafafa;
+            text-align: left;
+        }
+        .mode-card h4 { margin: 0 0 8px 0; color: #2c3e50; font-size: 16px; }
+        .mode-card p { margin: 0 0 12px 0; font-size: 13px; color: #666; }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .flashcard-wrapper { perspective: 1000px; margin: 15px 0; cursor: pointer; }
+        .flashcard { width: 100%; min-height: 220px; background-color: #f8f9fa; border: 2px solid #e9ecef; border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 25px; box-sizing: border-box; text-align: center; transition: transform 0.3s ease; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .flashcard:hover { transform: translateY(-2px); border-color: #3498db; }
+        .flashcard .card-label { font-size: 12px; font-weight: bold; color: #95a5a6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .flashcard .card-main { font-size: 20px; font-weight: bold; color: #2c3e50; line-height: 1.4; }
+        .flashcard .card-eng { font-size: 14px; color: #7f8c8d; font-style: italic; margin-top: 6px; }
+        .flashcard .card-sub { font-size: 13px; color: #2980b9; margin-top: 12px; font-weight: 600; line-height: 1.4; }
+        .flash-nav { display: flex; gap: 10px; margin-top: 15px; }
+        .flash-nav button { flex: 1; }
+
+        .wrong-list { text-align: left; max-height: 280px; overflow-y: auto; margin: 15px 0; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #fcfcfc; }
+        .wrong-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .wrong-item:last-child { border-bottom: none; }
+        .wrong-item .w-kor { font-weight: bold; color: #2c3e50; margin-bottom: 4px; font-size: 14px; }
+        .wrong-item .w-ger { color: #e74c3c; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>독일어 NVV 마스터</h2>
+    <div class="subtitle">Nomen-Verb-Verbindungen 핵심 어휘 및 문장 학습 엔진</div>
+    
+    <!-- 1. 메인 설정 화면 -->
+    <div id="setup-screen" class="setup-screen">
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <button class="btn btn-flash" style="margin:0;" onclick="startFlashcards()">🧠 플래시 카드 암기</button>
+            <button class="btn btn-switch" style="margin:0;" onclick="initSwitchEngine()">🔄 격식 ↔ 구어 스위칭</button>
+        </div>
+        <button class="btn btn-wrong" style="margin-bottom: 20px;" onclick="openWrongNoteManager()">🚨 오답 노트 복습 (<span id="wrong-count">0</span>개 저장됨)</button>
+
+        <div class="mode-card">
+            <h4>🧩 1. 핵심 단어/표현 빈칸 채우기 퀴즈</h4>
+            <p>핵심 단어 3~5개가 빈칸으로 무작위 출제됩니다.</p>
+            <div class="btn-grid">
+                <button class="btn btn-outline" style="margin:0;" onclick="startMode('multi', 10)">10문항</button>
+                <button class="btn btn-outline" style="margin:0;" onclick="startMode('multi', 20)">20문항</button>
+                <button class="btn btn-outline" style="margin:0;" onclick="startMode('multi', 30)">30문항</button>
+                <button class="btn btn-primary" style="margin:0;" onclick="startMode('multi', 999)">전체</button>
+            </div>
+        </div>
+
+        <div class="mode-card">
+            <h4>✍️ 2. 한국어 뜻 ➔ 독일어 전체 작문 퀴즈</h4>
+            <p>한국어 번역을 보고 독일어 문장 전체를 타이핑합니다.</p>
+            <div class="btn-grid">
+                <button class="btn btn-outline" style="margin:0;" onclick="startMode('write', 10)">10문항</button>
+                <button class="btn btn-outline" style="margin:0;" onclick="startMode('write', 20)">20문항</button>
+                <button class="btn btn-outline" style="margin:0;" onclick="startMode('write', 30)">30문항</button>
+                <button class="btn btn-primary" style="margin:0;" onclick="startMode('write', 999)">전체</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. 플래시 카드 화면 -->
+    <div id="flashcard-screen" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <span class="type-badge badge-flash" id="flash-badge">카드 1 / 31</span>
+            <span style="font-size: 12px; color: #7f8c8d;">💡 카드를 클릭하면 뒤집어집니다</span>
+        </div>
+
+        <div class="flashcard-wrapper" onclick="toggleFlashcard()">
+            <div class="flashcard" id="flashcard-content"></div>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn-tts" onclick="speakCurrentFlashcard(event)">🔊 독일어 발음 듣기</button>
+        </div>
+
+        <div class="flash-nav">
+            <button class="btn btn-outline" onclick="prevFlashcard()">◀ 이전 카드</button>
+            <button class="btn btn-outline" onclick="nextFlashcard()">다음 카드 ▶</button>
+        </div>
+        <button class="btn btn-secondary" onclick="showSetup()" style="margin-top: 15px;">🏠 메인 메뉴로 돌아가기</button>
+    </div>
+
+    <!-- 3. 타이핑 퀴즈 및 스위칭 화면 -->
+    <div id="quiz-screen" style="display: none;">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="question-card">
+            <span class="type-badge" id="quiz-type"></span>
+            <div class="korean-hint" id="kor-text"></div>
+            <div class="german-context" id="ger-text"></div>
+        </div>
+        
+        <div id="input-area"></div>
+        <div class="result-box" id="result-box"></div>
+        <button class="btn btn-primary" id="action-btn" onclick="handleSubmit()" style="margin-top: 15px;">정답 확인</button>
+        <button class="btn btn-secondary" onclick="confirmReturnToMain()" style="margin-top: 5px;">🏠 메인 메뉴로 돌아가기</button>
+    </div>
+
+    <!-- 4. 오답 노트 관리 화면 -->
+    <div id="wrong-screen" class="setup-screen" style="display: none;">
+        <h3>🚨 저장된 오답 노트</h3>
+        <p style="font-size: 13px; color: #666;">틀렸던 문항들만 모아 집중적으로 재학습합니다.</p>
+        
+        <div class="wrong-list" id="wrong-list-container"></div>
+        
+        <button class="btn btn-wrong" onclick="startWrongQuiz()">🎯 오답 노트 집중 퀴즈 시작</button>
+        <button class="btn btn-outline" onclick="clearWrongNotes()">🗑️ 오답 노트 초기화</button>
+        <button class="btn btn-secondary" onclick="showSetup()" style="margin-top: 10px;">🏠 메인 메뉴로 돌아가기</button>
+    </div>
+
+    <!-- 5. 결과 화면 -->
+    <div id="score-screen" class="score-screen" style="display: none;">
+        <h3>학습 세션 완료!</h3>
+        <div class="score-num" id="final-score">0 / 0</div>
+        <p id="score-comment"></p>
+        <button class="btn btn-success" onclick="showSetup()">🏠 메인 메뉴로 돌아가기</button>
+    </div>
+</div>
+
+<script>
+    /* =========================================================
+       📖 1. 플래시 카드 전용 데이터 (영어 eng 필드 전면 반영)
+       ========================================================= */
+    const flashcardData = [
+        { kor: "저녁을 보내다", text: "den/einen Abend verbringen", eng: "to spend an evening", flashNote: "💡 예문: Gestern haben wir mit Freundinnen einen schönen Abend verbracht." },
+        { kor: "저녁을 먹다", text: "zu Abend essen", eng: "to have dinner", flashNote: "💡 예문: Wir haben in einem neuen italienischen Restaurant zu Abend gegessen." },
+        { kor: "~와 작별하다", text: "Abschied nehmen von + Dat.", eng: "to say goodbye to", flashNote: "💡 예문: Ich habe am Flughafen von meinen Eltern Abschied genommen." },
+        { kor: "졸업하다, 학위를 마치다", text: "einen Abschluss machen", eng: "to graduate, finish a degree", flashNote: "💡 예문: Meine Schwester hat endlich an der Uni ihren Abschluss gemacht." },
+        { kor: "~할 의도가 있다", text: "die Absicht haben, zu Inf.", eng: "to have the intention (to)", flashNote: "💡 예문: Ich habe die Absicht, nächsten Monat umzuziehen." },
+        { kor: "거리를 유지하다", text: "Abstand halten", eng: "to keep distance", flashNote: "💡 예문: Während der Corona-Pandemie musste man Abstand voneinander halten." },
+        { kor: "~을 조심하다", text: "sich in Acht nehmen vor + Dat.", eng: "to be careful of", flashNote: "💡 예문: Wenn man in den Bergen wandert, sollte man sich vor der Wetterveränderung in Acht nehmen." },
+        { kor: "~을 간과하다/소홀히 하다", text: "etw. außer Acht lassen", eng: "to disregard / overlook", flashNote: "💡 예문: Und man darf es unbedingt nicht außer Acht lassen, eine Karte vorzubereiten." },
+        { kor: "~에 대해 (전혀) 모르다", text: "keine Ahnung haben von + Dat.", eng: "to have no idea about", flashNote: "💡 예문: Ich habe keine Ahnung von der Reparatur des Computers." },
+        { kor: "~을 시작하다", text: "den/einen Anfang machen mit + Dat.", eng: "to make a start with", flashNote: "💡 예문: Ich möchte im neuen Jahr einen Anfang mit dem Sport machen." },
+        { kor: "문의하다", text: "eine Anfrage stellen bei + Dat.", eng: "to make an inquiry", flashNote: "💡 예문: Ich habe beim Hotel eine Anfrage gestellt, ob ein Zimmer frei ist." },
+        { kor: "~에 대해 정보를 제공하다", text: "Angaben machen zu + Dat.", eng: "to give information/details about", flashNote: "💡 예문: Als ich mich online registriert habe, musste ich Angaben zu Namen und E-Mail-Adresse machen." },
+        { kor: "~에 착수하다", text: "etw. in Angriff nehmen", eng: "to tackle, get started on", flashNote: "💡 예문: Wir haben es endlich in Angriff genommen, unser Haus aufzuräumen." },
+        { kor: "무서워지다", text: "Angst bekommen", eng: "to become afraid", flashNote: "💡 예문: Ich habe Angst bekommen, weil ich plötzlich ein komisches Geräusch gehört habe." },
+        { kor: "~을 두려워하다", text: "Angst haben vor + Dat.", eng: "to be afraid of", flashNote: "💡 예문: Ich habe große Angst vor Spinnen." },
+        { kor: "~을 겁먹게 하다", text: "jdm. Angst machen", eng: "to scare someone", flashNote: "💡 예문: Sie hat mir richtig Angst gemacht." },
+        { kor: "~의 계기/원인이 되다", text: "Anlass geben zu + Dat.", eng: "to give cause/occasion for", flashNote: "💡 예문: Sein Verhalten hat Anlass zu Missverständnissen gegeben." },
+        { kor: "~에 대한 견해를 갖다", text: "eine Ansicht haben zu + Dat.", eng: "to have a view/opinion on", flashNote: "💡 예문: Hast du eine Ansicht zu diesem Problem?" },
+        { kor: "~을 이용/요구하다", text: "etw./jdn. in Anspruch nehmen", eng: "to make use of / claim", flashNote: "💡 예문: Beim Umziehen habe ich die Hilfe meiner Freunde in Anspruch genommen." },
+        { kor: "~에 대한 권리가 있다", text: "einen Anspruch haben auf + Akk.", eng: "to have a claim to", flashNote: "💡 예문: Man hat einen Anspruch auf Rückerstattung." },
+        { kor: "~을 신청하다", text: "den/einen Antrag stellen auf + Akk.", eng: "to submit an application for", flashNote: "💡 예문: Ich habe gestern einen Antrag auf ein Visum gestellt." },
+        { kor: "답을 받다", text: "Antwort bekommen / erhalten", eng: "to get an answer", flashNote: "💡 예문: Ich habe noch keine Antwort von der Firma bekommen." },
+        { kor: "답을 하다", text: "die/eine Antwort geben", eng: "to give an answer", flashNote: "💡 예문: Die Firma hat mir noch keine Antwort gegeben." },
+        { kor: "신고하다", text: "Anzeige erstattet bei + Dat.", eng: "to file a report (to police)", flashNote: "💡 예문: Sie hat bei der Polizei Anzeige erstattet." },
+        { kor: "일을 해내다", text: "eine Arbeit leisten", eng: "to do work", flashNote: "💡 예문: Das Team hat eine wunderbare Arbeit geleistet." },
+        { kor: "일하러 가다", text: "an die Arbeit gehen", eng: "to go to work", flashNote: "💡 예문: Jetzt müssen alle wieder an die Arbeit gehen." },
+        { kor: "일을 시작하다", text: "die Arbeit aufnehmen", eng: "to start work", flashNote: "💡 예문: Ich nehme nächsten Montag die Arbeit in meinem neuen Job auf." },
+        { kor: "일을 중단하다", text: "die Arbeit einstellen", eng: "to stop work", flashNote: "💡 예문: Arbeitnehmer haben im Streik die Arbeit eingestellt." },
+        { kor: "~에게 골칫거리를 주다", text: "jdm. Ärger bereiten", eng: "to cause trouble for someone", flashNote: "💡 예문: Die neue Steuermaßnahme bereitet vielen Selbständigen Ärger." },
+        { kor: "~에게 골칫거리를 주다/말썽을 부리다", text: "jdm. Ärger machen", eng: "to cause trouble for someone", flashNote: "💡 예문: Mein neuer Laptop macht (mir) ständig Ärger." },
+        { kor: "곤란해지다/혼나다", text: "Ärger bekommen", eng: "to get into trouble", flashNote: "💡 예문: Ich habe von meinem Chef Ärger bekommen." }
+    ];
+
+    /* =========================================================
+       ✍️ 2. 퀴즈 전용 데이터 (격식/구어 쌍 pairId 세밀 반영)
+       ========================================================= */
+    const quizData = [
+        { id: 1, text: "Gestern haben wir mit Freundinnen einen schönen Abend verbracht.", kor: "우리 어제 저녁에 친구들이랑 정말 즐거운 저녁을 보냈어.", multiBlanks: ["mit", "Freundinnen", "schönen", "Abend", "verbracht"] },
+        { id: 2, text: "Wir haben in einem neuen italienischen Restaurant zu Abend gegessen.", kor: "우리는 새로 생긴 이탈리안 레스토랑에서 저녁을 먹었어.", multiBlanks: ["neuen", "italienischen", "Restaurant", "zu", "Abend", "gegessen"] },
+        
+        { id: 3, pairId: 1, style: "격식체", text: "Ich habe am Flughafen von meinen Eltern Abschied genommen, und dabei sind mir Tränen gekommen.", kor: "공항에서 부모님과 작별 인사를 나누었고, 그때 눈물이 났어요.", multiBlanks: ["am", "von", "Eltern", "Abschied", "genommen"] },
+        { id: 4, pairId: 1, style: "구어체", text: "Ich hab mich am Flughafen von meinen Eltern verabschiedet und musste weinen.", kor: "공항에서 부모님과 작별 인사를 했고 울어야 했어요.", multiBlanks: ["mich", "von", "Eltern", "verabschiedet", "weinen"] },
+        
+        { id: 5, text: "Meine Schwester hat endlich an der Uni ihren Abschluss gemacht. Ich bin sehr stolz auf sie.", kor: "내 동생이 드디어 대학교를 졸업했어. 정말 자랑스러워.", multiBlanks: ["endlich", "Uni", "Abschluss", "gemacht", "stolz", "auf"] },
+        
+        { id: 6, pairId: 2, style: "격식체", text: "Ich habe die Absicht, nächsten Monat umzuziehen, weil mein neuer Arbeitsplatz zu weit weg ist.", kor: "새 직장이 너무 멀어서 다음 달에 이사할 생각이야. (격식체)", multiBlanks: ["die", "Absicht", "umzuziehen", "weil", "Arbeitsplatz"] },
+        { id: 7, pairId: 2, style: "구어체", text: "Ich will nächsten Monat umziehen, weil mein neuer Job zu weit weg ist.", kor: "새 직장이 너무 멀어서 다음 달에 이사할 생각이야. (구어체)", multiBlanks: ["will", "nächsten", "umziehen", "Job", "weit"] },
+        
+        { id: 8, text: "Während der Corona-Pandemie musste man Abstand voneinander halten.", kor: "코로나 때는 사람들이 서로 거리를 유지해야 했어.", multiBlanks: ["Während", "Pandemie", "musste", "Abstand", "voneinander", "halten"] },
+        
+        { id: 9, pairId: 3, style: "격식체", text: "Wenn man in den Bergen wandert, sollte man sich vor der Wetterveränderung in Acht nehmen.", kor: "산에서 등산할 때는 날씨 변화를 조심해야 해. (격식체)", multiBlanks: ["sollte", "sich", "vor", "Wetterveränderung", "in", "Acht", "nehmen"] },
+        { id: 10, pairId: 3, style: "구어체", text: "Wenn man in den Bergen wandert, sollte man auf Wetterumschwünge achten.", kor: "산에서 등산할 때는 날씨 변화를 조심해야 해. (구어체)", multiBlanks: ["sollte", "auf", "Wetterumschwünge", "achten"] },
+        
+        { id: 11, pairId: 4, style: "격식체", text: "Und man darf es unbedingt nicht außer Acht lassen, eine Karte vorzubereiten.", kor: "그리고 지도를 준비하는 걸 절대 간과하면 안돼. (격식체)", multiBlanks: ["darf", "unbedingt", "außer", "Acht", "lassen", "vorzubereiten"] },
+        { id: 12, pairId: 4, style: "구어체", text: "Und man sollte auf keinen Fall vergessen, eine Karte mitzunehmen.", kor: "그리고 지도를 준비하는 걸 절대 간과하면 안돼. (구어체)", multiBlanks: ["sollte", "auf", "keinen", "vergessen", "mitzunehmen"] },
+        
+        { id: 13, pairId: 5, style: "격식체", text: "Ich habe keine Ahnung von der Reparatur des Computers. Daher habe ich einen Experten kommen lassen.", kor: "컴퓨터 어떻게 고치는지 몰라서 사람을 불렀어. (격식체)", multiBlanks: ["keine", "Ahnung", "von", "Reparatur", "Experten", "kommen", "lassen"] },
+        { id: 14, pairId: 5, style: "구어체", text: "Ich hab keine Ahnung, wie man Computer repariert. Deshalb hab ich mir jemanden geholt.", kor: "컴퓨터 어떻게 고치는지 몰라서 사람을 불렀어. (구어체)", multiBlanks: ["Ahnung", "wie", "repariert", "Deshalb", "geholt"] },
+        
+        { id: 15, pairId: 6, style: "격식체", text: "Ich möchte im neuen Jahr einen Anfang mit dem Sport machen.", kor: "새해에는 운동으로 시작해보려고 해. (격식체)", multiBlanks: ["einen", "Anfang", "mit", "dem", "Sport", "machen"] },
+        { id: 16, pairId: 6, style: "구어체", text: "Ich will im neuen Jahr endlich mit Sport anfangen.", kor: "새해에는 드디어 운동 시작하려고. (구어체)", multiBlanks: ["will", "endlich", "mit", "Sport", "anfangen"] },
+        
+        { id: 17, pairId: 7, style: "격식체", text: "Ich habe beim Hotel eine Anfrage gestellt, ob ein Zimmer frei ist.", kor: "호텔에 방이 남아있는지 문의했어. (격식체)", multiBlanks: ["beim", "eine", "Anfrage", "gestellt", "ob", "frei"] },
+        { id: 18, pairId: 7, style: "구어체", text: "Ich hab beim Hotel nachgefragt, ob noch ein Zimmer frei ist.", kor: "호텔에 방이 남아있는지 문의했어. (구어체)", multiBlanks: ["beim", "nachgefragt", "ob", "noch", "frei"] },
+        
+        { id: 19, pairId: 8, style: "격식체", text: "Als ich mich online registriert habe, musste ich Angaben zu Namen und E-Mail-Adresse machen.", kor: "온라인 가입 시 이름이랑 이메일에 대한 정보를 입력해야 했어. (격식체)", multiBlanks: ["registriert", "Angaben", "zu", "Namen", "Adresse", "machen"] },
+        { id: 20, pairId: 8, style: "구어체", text: "Als ich mich online angemeldet habe, musste ich meinen Namen und meine E-Mail-Adresse eingeben.", kor: "온라인 가입 시 이름이랑 이메일에 대한 정보를 입력해야 했어. (구어체)", multiBlanks: ["angemeldet", "musste", "Namen", "Adresse", "eingeben"] },
+        
+        { id: 21, pairId: 9, style: "격식체", text: "Wir haben es endlich in Angriff genommen, unser Haus aufzuräumen - das haben wir monatelang vor uns hergeschoben.", kor: "우리 드디어 집 청소를 시작했어. 몇 달 동안 미뤄왔거든. (격식체)", multiBlanks: ["in", "Angriff", "genommen", "aufzuräumen", "monatelang", "hergeschoben"] },
+        { id: 22, pairId: 9, style: "구어체", text: "Wir haben endlich angefangen, unser Haus aufzuräumen - das haben wir monatelang vor uns hergeschoben.", kor: "우리 드디어 집 청소를 시작했어. 몇 달 동안 미뤄왔거든. (구어체)", multiBlanks: ["endlich", "angefangen", "aufzuräumen", "monatelang", "hergeschoben"] },
+        
+        { id: 23, text: "Nachts war ich alleine zu Hause, und ich habe Angst bekommen, weil ich plötzlich ein komisches Geräusch gehört habe.", kor: "밤에 혼자 집에 있는데 갑자기 이상한 소리가 나서 무서워졌어.", multiBlanks: ["alleine", "Angst", "bekommen", "plötzlich", "Geräusch", "gehört"] },
+        
+        { id: 24, pairId: 10, style: "격식체", text: "Ich habe große Angst vor Spinnen.", kor: "나는 거미를 정말 무서워해. (격식체)", multiBlanks: ["große", "Angst", "vor", "Spinnen"] },
+        { id: 25, pairId: 10, style: "구어체", text: "Ich hab tierisch Angst vor Spinnen und ich hab mich richtig erschrocken.", kor: "나는 거미를 정말 무서워해서 엄청 놀랐어. (구어체)", multiBlanks: ["tierisch", "Angst", "vor", "richtig", "erschrocken"] },
+        
+        { id: 26, text: "Gestern habe ich eine in meinem Zimmer gesehen, und sie hat mir richtig Angst gemacht.", kor: "어제 방에서 거미를 봤는데 진짜 무서웠어.", multiBlanks: ["Gestern", "Zimmer", "gesehen", "richtig", "Angst", "gemacht"] },
+        
+        { id: 27, pairId: 11, style: "격식체", text: "Sein Verhalten hat Anlass zu Missverständnissen gegeben.", kor: "그의 행동이 오해를 불러일으켰어. (격식체)", multiBlanks: ["Verhalten", "Anlass", "zu", "Missverständnissen", "gegeben"] },
+        { id: 28, pairId: 11, style: "구어체", text: "Sein Verhalten hat für Missverständnisse gesorgt.", kor: "그의 행동이 오해를 불러일으켰어. (구어체)", multiBlanks: ["Verhalten", "für", "Missverständnisse", "gesorgt"] },
+        
+        { id: 29, pairId: 12, style: "격식체", text: "Hast du eine Ansicht zu diesem Problem?", kor: "이 문제에 대한 네 생각은 어때? (격식체)", multiBlanks: ["Hast", "eine", "Ansicht", "zu", "Problem"] },
+        { id: 30, pairId: 12, style: "구어체", text: "Was hältst du davon?", kor: "이 문제에 대해 어떻게 생각해? (구어체)", multiBlanks: ["Was", "hältst", "du", "davon"] },
+        
+        { id: 31, pairId: 13, style: "격식체", text: "Beim Umziehen habe ich die Hilfe meiner Freunde in Anspruch genommen.", kor: "이사할 때 친구 도움을 좀 받았어. (격식체)", multiBlanks: ["Beim", "Umziehen", "Hilfe", "in", "Anspruch", "genommen"] },
+        { id: 32, pairId: 13, style: "구어체", text: "Beim Umziehen haben mir meine Freunde geholfen.", kor: "이사할 때 친구 도움을 좀 받았어. (구어체)", multiBlanks: ["Beim", "Umziehen", "haben", "Freunde", "geholfen"] },
+        
+        { id: 33, pairId: 14, style: "격식체", text: "Man hat einen Anspruch auf Rückerstattung, weil dieses Produkt fehlerhaft ist.", kor: "이 제품이 불량이라서 환불받을 권리가 있어. (격식체)", multiBlanks: ["Anspruch", "auf", "Rückerstattung", "Produkt", "fehlerhaft"] },
+        { id: 34, pairId: 14, style: "구어체", text: "Weil das Produkt kaputt ist, kann ich mein Geld zurückverlangen.", kor: "제품이 고장 나서 환불받을 수 있어. (구어체)", multiBlanks: ["Produkt", "kaputt", "kann", "Geld", "zurückverlangen"] },
+        
+        { id: 35, pairId: 15, style: "격식체", text: "Ich habe gestern einen Antrag auf ein Visum gestellt.", kor: "나는 어제 비자를 신청했어. (격식체)", multiBlanks: ["gestern", "einen", "Antrag", "auf", "Visum", "gestellt"] },
+        { id: 36, pairId: 15, style: "구어체", text: "Ich hab gestern ein Visum beantragt.", kor: "나는 어제 비자를 신청했어. (구어체)", multiBlanks: ["gestern", "ein", "Visum", "beantragt"] },
+        
+        { id: 37, text: "Ich habe noch keine Antwort von der Firma bekommen.", kor: "나는 아직 그 회사로부터 답을 못 받았어.", multiBlanks: ["noch", "keine", "Antwort", "von", "Firma", "bekommen"] },
+        
+        { id: 38, pairId: 16, style: "격식체", text: "Die Firma hat mir noch keine Antwort gegeben.", kor: "그 회사가 나한테 아직 답을 안 줬어. (격식체)", multiBlanks: ["Firma", "noch", "keine", "Antwort", "gegeben"] },
+        { id: 39, pairId: 16, style: "구어체", text: "Ich hab noch nichts von denen gehört.", kor: "그 회사 소식 아직 못 들었어. (구어체)", multiBlanks: ["noch", "nichts", "von", "denen", "gehört"] },
+        
+        { id: 40, text: "Sie hat bei der Polizei Anzeige erstattet, weil ihre Handtasche gestohlen wurde.", kor: "그녀는 지갑을 도둑맞아서 경찰에 신고했어.", multiBlanks: ["Polizei", "Anzeige", "erstattet", "Handtasche", "gestohlen", "wurde"] },
+        
+        { id: 41, pairId: 17, style: "격식체", text: "Das Team hat eine wunderbare Arbeit geleistet.", kor: "그 팀은 정말 훌륭한 성과를 냈어. (격식체)", multiBlanks: ["Team", "wunderbare", "Arbeit", "geleistet"] },
+        { id: 42, pairId: 17, style: "구어체", text: "Das Team hat richtig gut gearbeitet.", kor: "그 팀은 정말 일을 잘했어. (구어체)", multiBlanks: ["Team", "richtig", "gut", "gearbeitet"] },
+        
+        { id: 43, text: "Jetzt müssen alle wieder an die Arbeit gehen.", kor: "이제 다들 다시 일하러 가야지.", multiBlanks: ["Jetzt", "müssen", "wieder", "an", "Arbeit", "gehen"] },
+        
+        { id: 44, pairId: 18, style: "격식체", text: "Ich nehme nächsten Montag die Arbeit in meinem neuen Job auf.", kor: "나는 다음 주 월요일부터 새 직장에서 일을 시작해. (격식체)", multiBlanks: ["nehme", "nächsten", "Montag", "Arbeit", "Job", "auf"] },
+        { id: 45, pairId: 18, style: "구어체", text: "Ich fange nächsten Montag bei meinem neuen Job an.", kor: "나는 다음 주 월요일부터 새 직장에서 일 시작해. (구어체)", multiBlanks: ["fange", "nächsten", "Montag", "bei", "Job", "an"] },
+        
+        { id: 46, text: "Arbeitnehmer haben im Streik die Arbeit eingestellt, um höhere Löhne zu fordern.", kor: "노동자들이 임금 인상을 요구하며 파업으로 일을 중단했어.", multiBlanks: ["Arbeitnehmer", "Streik", "Arbeit", "eingestellt", "höhere", "Löhne"] },
+        
+        { id: 47, pairId: 19, style: "격식체", text: "Die neue Steuermaßnahme bereitet vielen Selbständigen Ärger.", kor: "새로운 세금 정책이 많은 자영업자들에게 골칫거리를 안기고 있다. (격식체)", multiBlanks: ["neue", "Steuermaßnahme", "bereitet", "Selbständigen", "Ärger"] },
+        { id: 48, pairId: 19, style: "구어체", text: "Die neue Steuermaßnahme macht vielen Selbständigen Probleme.", kor: "새로운 세금 정책이 많은 자영업자들에게 골칫거리를 안기고 있다. (구어체)", multiBlanks: ["neue", "Steuermaßnahme", "macht", "Selbständigen", "Probleme"] },
+        
+        { id: 49, text: "Mein neuer Laptop macht mir ständig Ärger.", kor: "새로 산 노트북이 자꾸 말썽을 일으켜서 짜증 나.", multiBlanks: ["neuer", "Laptop", "macht", "ständig", "Ärger"] },
+        
+        { id: 50, pairId: 20, style: "격식체", text: "Ich habe von meinem Chef Ärger bekommen, weil ich gestern zu spät gekommen bin.", kor: "어제 지각해서 상사한테 혼났어. (격식체)", multiBlanks: ["Chef", "Ärger", "bekommen", "gestern", "spät", "gekommen"] },
+        { id: 51, pairId: 20, style: "구어체", text: "Mein Chef hat mich zusammengestaucht, weil ich gestern zu spät war.", kor: "어제 지각해서 상사한테 잔소리 엄청 들었어. (구어체)", multiBlanks: ["Chef", "zusammengestaucht", "gestern", "zu", "spät"] }
+    ];
+
+    let generatedQuestions = [];
+    let currentIdx = 0;
+    let score = 0;
+    let isChecked = false;
+
+    let flashcardList = [];
+    let flashIdx = 0;
+    let isFlipped = false;
+
+    let wrongStorage = JSON.parse(localStorage.getItem('nvv_wrong_storage') || '[]');
+
+    function updatePoolInfo() {
+        document.getElementById('wrong-count').innerText = wrongStorage.length;
+    }
+
+    function showSetup() {
+        document.getElementById('setup-screen').style.display = 'block';
+        document.getElementById('flashcard-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('wrong-screen').style.display = 'none';
+        document.getElementById('score-screen').style.display = 'none';
+        updatePoolInfo();
+    }
+
+    function confirmReturnToMain() {
+        if (confirm("진행 중인 학습을 중단하고 메인 메뉴로 돌아가시겠습니까?")) {
+            showSetup();
+        }
+    }
+
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
+    /* 📖 1. 플래시 카드 기능 */
+    function startFlashcards() {
+        flashcardList = [...flashcardData].sort(() => 0.5 - Math.random());
+        flashIdx = 0;
+        isFlipped = false;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('flashcard-screen').style.display = 'block';
+        renderFlashcard();
+    }
+
+    function renderFlashcard() {
+        const item = flashcardList[flashIdx];
+        const cardEl = document.getElementById('flashcard-content');
+        document.getElementById('flash-badge').innerText = `카드 ${flashIdx + 1} / ${flashcardList.length}`;
+
+        if (!isFlipped) {
+            cardEl.innerHTML = `
+                <div class="card-label">한국어 (클릭하여 뒤집기)</div>
+                <div class="card-main">${item.kor}</div>
+            `;
+        } else {
+            const extraNote = item.flashNote ? `<div class="card-sub">${item.flashNote}</div>` : '';
+            cardEl.innerHTML = `
+                <div class="card-label" style="color:#2ecc71;">Deutsch (독일어 표현)</div>
+                <div class="card-main" style="color:#2c3e50;">${item.text}</div>
+                <div class="card-eng">${item.eng || ''}</div>
+                ${extraNote}
+            `;
+        }
+    }
+
+    function toggleFlashcard() { isFlipped = !isFlipped; renderFlashcard(); }
+    function nextFlashcard() { if (flashIdx < flashcardList.length - 1) { flashIdx++; isFlipped = false; renderFlashcard(); } }
+    function prevFlashcard() { if (flashIdx > 0) { flashIdx--; isFlipped = false; renderFlashcard(); } }
+    function speakCurrentFlashcard(e) { e.stopPropagation(); speakText(flashcardList[flashIdx].text); }
+
+    /* 🔄 2. 격식 ↔ 구어 스위칭 엔진 (쌍으로 존재하는 표현만 필터링) */
+    function initSwitchEngine() {
+        let pool = [];
+        const pairs = {};
+        quizData.forEach(s => {
+            if(s.pairId) {
+                if(!pairs[s.pairId]) pairs[s.pairId] = {};
+                pairs[s.pairId][s.style] = s;
+            }
+        });
+
+        Object.values(pairs).forEach(pair => {
+            if(pair["격식체"] && pair["구어체"]) {
+                pool.push({
+                    type: "write",
+                    badge: "🔄 격식체(NVV)로 변환 작문",
+                    kor: `[한국어] ${pair["격식체"].kor}`,
+                    context: `[구어체 표현]: ${pair["구어체"].text}\n\n위 구어체 문장을 '격식체(NVV)'로 바꾸어 타이핑하세요:`,
+                    answers: [pair["격식체"].text],
+                    rawItem: pair["격식체"]
+                });
+                pool.push({
+                    type: "write",
+                    badge: "🔄 구어체(일반동사)로 변환 작문",
+                    kor: `[한국어] ${pair["구어체"].kor}`,
+                    context: `[격식체 표현]: ${pair["격식체"].text}\n\n위 격식체 문장을 '구어체'로 바꾸어 타이핑하세요:`,
+                    answers: [pair["구어체"].text],
+                    rawItem: pair["구어체"]
+                });
+            }
+        });
+
+        if(pool.length === 0) {
+            alert("스위칭을 위한 격식체-구어체 쌍 데이터가 없습니다.");
+            return;
+        }
+
+        pool.sort(() => 0.5 - Math.random());
+        generatedQuestions = pool;
+        currentIdx = 0;
+        score = 0;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+    }
+
+    /* 🧩 3. 퀴즈 생성 엔진 */
+    function startMode(modeType, count) {
+        let pool = [];
+        const shuffled = [...quizData].sort(() => 0.5 - Math.random());
+        
+        shuffled.forEach(s => {
+            const styleTag = s.style ? ` (${s.style})` : '';
+            if (modeType === 'multi') {
+                let targetSentence = s.text;
+                let answers = s.multiBlanks || [];
+                
+                let htmlFormatted = targetSentence;
+                answers.forEach((word, idx) => {
+                    const boxWidth = Math.max(word.length * 14 + 15, 45);
+                    const inputHtml = `<input type="text" class="blank-input" style="width:${boxWidth}px;" data-ans="${word}" id="multi-blank-${idx}">`;
+                    htmlFormatted = htmlFormatted.replace(new RegExp('\\b' + word + '\\b', 'g'), inputHtml);
+                });
+
+                pool.push({
+                    type: 'multi',
+                    badge: `🧩 핵심 표현 빈칸 채우기${styleTag}`,
+                    kor: s.kor,
+                    renderHtml: htmlFormatted,
+                    answers: answers,
+                    rawItem: s
+                });
+            } else if (modeType === 'write') {
+                pool.push({
+                    type: 'write',
+                    badge: `✍️ 독일어 전체 작문${styleTag}`,
+                    kor: s.kor,
+                    context: s.style ? `힌트 스타일: [${s.style}] 문장 전체를 타이핑하세요.` : "문장 전체를 정확하게 타이핑하세요.",
+                    answers: [s.text],
+                    rawItem: s
+                });
+            }
+        });
+
+        const finalCount = Math.min(count, pool.length);
+        generatedQuestions = pool.slice(0, finalCount);
+        currentIdx = 0;
+        score = 0;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        isChecked = false;
+        document.getElementById('result-box').style.display = 'none';
+        const actionBtn = document.getElementById('action-btn');
+        actionBtn.className = "btn btn-primary";
+        actionBtn.innerText = "정답 확인";
+        
+        const percent = (currentIdx / generatedQuestions.length) * 100;
+        document.getElementById('progress').style.width = percent + '%';
+
+        const q = generatedQuestions[currentIdx];
+        const typeBadge = document.getElementById('quiz-type');
+        
+        typeBadge.innerText = q.badge;
+        if (q.type === 'multi') typeBadge.className = "type-badge badge-multi";
+        else if (q.badge.includes('변환')) typeBadge.className = "type-badge badge-switch";
+        else typeBadge.className = "type-badge badge-write";
+
+        document.getElementById('kor-text').innerText = q.kor;
+
+        if (q.type === 'multi') {
+            document.getElementById('ger-text').innerHTML = q.renderHtml;
+            document.getElementById('input-area').innerHTML = "";
+            setTimeout(() => {
+                const firstInput = document.getElementById('multi-blank-0');
+                if(firstInput) firstInput.focus();
+                
+                const allInputs = document.querySelectorAll('.blank-input');
+                allInputs.forEach(input => {
+                    input.addEventListener('keypress', function(e) {
+                        if(e.key === 'Enter') handleSubmit();
+                    });
+                });
+            }, 50);
+        } else {
+            document.getElementById('ger-text').innerText = q.context;
+            document.getElementById('input-area').innerHTML = `<textarea class="full-textarea" id="full-answer" placeholder="독일어 정답 문장을 타이핑하세요."></textarea>`;
+            setTimeout(() => { document.getElementById('full-answer').focus(); }, 50);
+        }
+    }
+
+    function handleSubmit() {
+        if (!isChecked) {
+            checkAnswer();
+        } else {
+            currentIdx++;
+            if (currentIdx < generatedQuestions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+    }
+
+    function checkAnswer() {
+        const q = generatedQuestions[currentIdx];
+        let isCorrect = true;
+
+        if (q.type === 'multi') {
+            const allInputs = document.querySelectorAll('.blank-input');
+            allInputs.forEach(input => {
+                const userVal = input.value.trim();
+                const targetVal = input.getAttribute('data-ans');
+                if (userVal !== targetVal) {
+                    isCorrect = false;
+                    input.style.color = '#e74c3c';
+                    input.style.borderBottomColor = '#e74c3c';
+                } else {
+                    input.style.color = '#2ecc71';
+                    input.style.borderBottomColor = '#2ecc71';
+                }
+            });
+        } else {
+            const userAns = document.getElementById('full-answer').value.trim();
+            const cleanStr = (str) => str.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s+/g, ' ').toLowerCase().trim();
+            isCorrect = (cleanStr(q.answers[0]) === cleanStr(userAns));
+        }
+
+        const resultBox = document.getElementById('result-box');
+        resultBox.style.display = 'block';
+        
+        const fullGermanSentence = q.rawItem.text;
+
+        if (isCorrect) {
+            score++;
+            resultBox.className = "result-box result-correct";
+            resultBox.innerHTML = `
+                <strong>Richtig! (정답입니다!)</strong><br>
+                <button class="btn-tts" onclick="speakText('${fullGermanSentence.replace(/'/g, "\\'")}')">🔊 음성 듣기</button>
+            `;
+        } else {
+            resultBox.className = "result-box result-wrong";
+            resultBox.innerHTML = `
+                <strong>Falsch (틀렸습니다)</strong>
+                <div style="margin-top: 8px; font-size: 14px; line-height: 1.5;">
+                    <strong>올바른 원문:</strong> <span style="color:#2c3e50; font-weight:bold;">${fullGermanSentence}</span><br>
+                    <button class="btn-tts" onclick="speakText('${fullGermanSentence.replace(/'/g, "\\'")}')">🔊 올바른 발음 듣기</button>
+                </div>
+            `;
+            if(q.rawItem && !wrongStorage.some(w => w.id === q.rawItem.id)) {
+                wrongStorage.push(q.rawItem);
+                localStorage.setItem('nvv_wrong_storage', JSON.stringify(wrongStorage));
+            }
+        }
+
+        speakText(fullGermanSentence);
+
+        const actionBtn = document.getElementById('action-btn');
+        actionBtn.innerText = "다음 문제";
+        actionBtn.className = "btn btn-success";
+        isChecked = true;
+    }
+
+    /* 🚨 4. 오답 노트 기능 */
+    function openWrongNoteManager() {
+        if(wrongStorage.length === 0) {
+            alert("현재 오답 노트에 저장된 틀린 문항이 없습니다!");
+            return;
+        }
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('wrong-screen').style.display = 'block';
+
+        const container = document.getElementById('wrong-list-container');
+        container.innerHTML = wrongStorage.map(item => `
+            <div class="wrong-item">
+                <div class="w-kor">${item.style ? '[' + item.style + '] ' : ''}${item.kor}</div>
+                <div class="w-ger">${item.text}</div>
+                <button class="btn-tts" onclick="speakText('${item.text.replace(/'/g, "\\'")}')">🔊 발음 듣기</button>
+            </div>
+        `).join('');
+    }
+
+    function startWrongQuiz() {
+        let pool = wrongStorage.map(s => {
+            return {
+                type: 'write',
+                badge: `🚨 오답 집중 전체 작문`,
+                kor: s.kor,
+                context: s.style ? `힌트 스타일: [${s.style}] 문장 전체를 타이핑하세요.` : "문장 전체를 정확히 타이핑하세요.",
+                answers: [s.text],
+                rawItem: s
+            };
+        });
+
+        pool.sort(() => 0.5 - Math.random());
+        generatedQuestions = pool;
+        currentIdx = 0;
+        score = 0;
+
+        document.getElementById('wrong-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        loadQuestion();
+    }
+
+    function clearWrongNotes() {
+        if(confirm("저장된 오답 노트를 모두 삭제하시겠습니까?")) {
+            wrongStorage = [];
+            localStorage.removeItem('nvv_wrong_storage');
+            showSetup();
+        }
+    }
+
+    function showFinalScore() {
+        document.getElementById('progress').style.width = '100%';
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('score-screen').style.display = 'block';
+        
+        document.getElementById('final-score').innerText = `${score} / ${generatedQuestions.length}`;
+        const commentEl = document.getElementById('score-comment');
+        
+        const ratio = score / generatedQuestions.length;
+        if(ratio === 1) commentEl.innerText = "완벽합니다! 선택한 모든 문항을 맞히셨습니다! 👑";
+        else if(ratio >= 0.7) commentEl.innerText = "아주 뛰어난 성적입니다! 틀린 부분은 오답 노트에서 재학습해 보세요. 👍";
+        else commentEl.innerText = "틀린 문항들이 오답 노트에 저장되었습니다. 다시 도전해 보세요! 🔥";
+    }
+
+    window.onload = showSetup;
+</script>
+
+</body>
+</html>
