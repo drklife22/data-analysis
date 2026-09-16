@@ -1,7 +1,5 @@
 ﻿총 평점 3.68점 / 전공 평점 3.61점 / 총 이수학점 138.6점 / 전공 이수학점 84점
 
-~9.16 롯데GRS 채용연계형 인턴(영업관리) https://recruit.lotte.co.kr/apply/announcement/detail/21935527?compcd=?id=bookmark1004
-
 ~9.20 이랜드리테일 신입공채 https://recruit.elandretail.com/
 ~9.20 에이피알 채용연계형 인턴(국내 or 글로벌 CX 운영/기획) https://apr-careers.com/job_posting/SV1pC6BG
 ~9.20 에이피알 채용연계형 인턴(아마존/틱톡샵 운영팀 채널 운영) https://apr-careers.com/job_posting/Ye1NIkr1
@@ -18,6 +16,11 @@
 ~9.28 대한항공 신입(일반) https://koreanair.recruiter.co.kr/career/jobs/128413
 ~9.29 한국콜마 신입(경영기획) https://kolmar.recruiter.co.kr/career/jobs/127657
 ~9.29 코스맥스 신입(경영전략) https://cosmax.recruiter.co.kr/career/jobs/127964
+~9.30 CJ그룹 신입: 넷 중 하나
+      cj푸드빌 신입(브랜드전략, 베이커리데이터마케팅, 베이커리사업기획) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8771
+      cj제일제당 신입(영업 E-Commerce Sales) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8787
+      cj프레시웨이 신입(디지털 마케팅) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8773
+      cj올리브영 신입(Data Architect, 사업전략-커머스전략) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8769
 ~9.30 대한상공회의소 신입 https://dware.intojob.co.kr/main/korcham.jsp
 ~10.2 DB손해보험 신입(경영지원-디지털/IT) https://dbgroup.recruiter.co.kr/career/jobs/125713
 
