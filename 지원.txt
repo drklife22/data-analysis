@@ -1,12 +1,28 @@
 ﻿총 평점 3.68점 / 전공 평점 3.61점 / 총 이수학점 138.6점 / 전공 이수학점 84점
 공공데이터 공모전 경험도 정리해보기
 
-~9.30 17시 CJ그룹 신입: 넷 중 하나
-      cj푸드빌 신입(브랜드전략, 베이커리사업기획) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8771
-      cj제일제당 신입(영업 E-Commerce Sales) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8787
-      cj프레시웨이 신입(디지털 마케팅) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8773
-      cj올리브영 신입(Data Architect, 사업전략-커머스전략) https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8769
 ~9.30 16시 코스맥스 신입(경영전략) https://cosmax.recruiter.co.kr/career/jobs/127964
+- 주요 업무
+ - 경영진 중점 프로젝트 추진/관리
+ - 사업기회 발굴/투자 및 사업타당성 검토
+ - 글로벌 뷰티/유통 투자동향 분석
+
+~9.30 17시 CJ그룹 신입: 둘 중 하나
+cj푸드빌 베이커리사업기획 https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8771
+ - 담당 업무
+  - 브랜드의 성장 전략을 수립하고 실행 과정을 관리
+  - 매출 및 주요 경영 성과를 분석하고 미래 실적을 예측
+  - 브랜드 성과를 측정하는 주요 지표를 관리하고 개선 방안을 도출
+  - 마케팅, 신제품 출시 등 주요 활동이 수익에 미치는 영향을 분석하여 의사결정을 지원
+ - 우대 사항
+  - 경영, 경제, 회계, 통계 등 비즈니스 관련 전공
+  - 공모전, 프로젝트, 인턴십 등을 통해 시장조사, 데이터 분석 경험
+
+cj올리브영 사업전략-커머스전략 https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8769
+ - 담당 업무
+  - 국내 온라인 플랫폼 전략 수립 및 운영
+  - 고객 데이터 분석 기반 온라인몰 진단 및 개선
+  - 디지털 마켓 트렌드 분석 및 인사이트 도출
 
 ~10.2 DB손해보험 신입(경영지원-디지털/IT) https://dbgroup.recruiter.co.kr/career/jobs/125713
 
