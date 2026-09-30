@@ -1,14 +1,7 @@
 ﻿총 평점 3.68점 / 전공 평점 3.61점 / 총 이수학점 138.6점 / 전공 이수학점 84점
 공공데이터 공모전 경험도 정리해보기
 
-~9.30 17시 CJ그룹 신입: 둘 중 하나
-cj올리브영 사업전략-커머스전략 https://recruit.cj.net/recruit/ko/recruit/recruit/detail.fo?zz_jo_num=8769
- - 담당 업무
-  - 국내 온라인 플랫폼 전략 수립 및 운영
-  - 고객 데이터 분석 기반 온라인몰 진단 및 개선
-  - 디지털 마켓 트렌드 분석 및 인사이트 도출
-
-~10.2 DB손해보험 신입(경영지원-디지털/IT) https://dbgroup.recruiter.co.kr/career/jobs/125713
+~10.2 17시 DB손해보험 신입(경영지원-디지털/IT) https://dbgroup.recruiter.co.kr/career/jobs/125713
 
 ~10.5 kt알파 쇼핑 ​Data Analyst(DA) https://recruit.kt.com/careers/265764
 ~10.5 LG전자 AX스쿨(마케팅) https://axschool.co.kr/course-ai-fusion-marketing 
