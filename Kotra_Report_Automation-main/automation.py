@@ -198,9 +198,10 @@ def fill_form(page: Page, row_data: dict[str, Any]) -> None:
         selector_key = field_info["selector_key"]
 
         if field_type == "input":
-            selector = SELECTORS[selector_key]
-            locator = page.locator(selector).first
-            locator.wait_for(state="visible", timeout=ELEMENT_TIMEOUT_MS)
+            locator = find_input_locator(page, selector_key, required=field_info.get("required", False))
+            if locator is None:
+                # 선택 입력칸(예: 수출품명)은 화면에서 찾지 못해도 건너뛰고 계속 진행합니다.
+                continue
             locator.scroll_into_view_if_needed()
             locator.fill(value)
 
@@ -217,27 +218,80 @@ def fill_form(page: Page, row_data: dict[str, Any]) -> None:
             raise ValueError(f"지원하지 않는 입력 타입입니다: {field_type}")
 
 
+def find_input_locator(page: Page, selector_key: str, required: bool = True):
+    """
+    기본 selector와 `<selector_key>_fallbacks` 목록을 번갈아 확인해 먼저 보이는 입력칸을 반환한다.
+    필수 입력칸이 아니면 짧게만 기다리고, 끝내 못 찾으면 None을 반환한다.
+    """
+    selectors = [SELECTORS[selector_key], *SELECTORS.get(f"{selector_key}_fallbacks", [])]
+    locators = [page.locator(selector).first for selector in selectors]
+    timeout_ms = ELEMENT_TIMEOUT_MS if required else min(ELEMENT_TIMEOUT_MS, 15_000)
+
+    deadline = datetime.now().timestamp() + timeout_ms / 1000
+    while datetime.now().timestamp() < deadline:
+        for locator in locators:
+            if is_visible(locator):
+                return locator
+        page.wait_for_timeout(200)
+
+    if not required:
+        return None
+
+    joined = ", ".join(selectors)
+    raise PlaywrightTimeoutError(f"입력칸을 찾지 못했습니다({selector_key}). 시도한 selector: {joined}")
+
+
 def select_dropdown(page: Page, selector_key: str, value: str, field_info: dict[str, Any] | None = None) -> None:
-    selector = SELECTORS[selector_key]
-    dropdown = page.locator(selector).first
-    dropdown.wait_for(state="visible", timeout=ELEMENT_TIMEOUT_MS)
+    dropdown = find_input_locator(page, selector_key)
     dropdown.scroll_into_view_if_needed()
 
     candidates = dropdown_value_candidates(value, field_info or {})
-    open_dropdown(page, dropdown, candidates)
+    attempts = [
+        lambda: open_dropdown(page, dropdown, candidates) or click_dropdown_option(page, candidates),
+        lambda: select_dropdown_by_keyboard(page, dropdown, candidates[0], field_info or {}),
+        lambda: open_dropdown(page, dropdown, candidates) or click_dropdown_option(page, candidates),
+        lambda: select_native_option(page, selector_key, candidates),
+    ]
 
-    if click_dropdown_option(page, candidates):
-        return
-
-    if select_dropdown_by_keyboard(page, dropdown, candidates[0], field_info or {}):
-        return
-
-    open_dropdown(page, dropdown, candidates)
-    if click_dropdown_option(page, candidates):
-        return
+    # 각 방법이 끝난 뒤 드롭다운 버튼에 선택값이 실제로 표시됐는지 확인한다.
+    for attempt in attempts:
+        if attempt() and dropdown_shows_value(page, dropdown, candidates):
+            return
 
     joined = ", ".join(candidates)
     raise ValueError(f"드롭다운 옵션을 찾지 못했습니다. 입력값: {value}, 시도한 값: {joined}")
+
+
+def dropdown_shows_value(page: Page, dropdown, candidates: list[str], timeout_ms: int = 2_000) -> bool:
+    deadline = datetime.now().timestamp() + timeout_ms / 1000
+    while datetime.now().timestamp() < deadline:
+        try:
+            text = dropdown.inner_text(timeout=1_000)
+        except Exception:
+            text = ""
+        if any(candidate in text for candidate in candidates):
+            return True
+        page.wait_for_timeout(100)
+    return False
+
+
+def select_native_option(page: Page, selector_key: str, candidates: list[str]) -> bool:
+    """
+    Radix/shadcn Select는 화면 밖에 숨긴 <select>를 함께 두므로, 마지막 수단으로 그 값을 직접 고른다.
+    """
+    native_selector = SELECTORS.get(selector_key.replace("_dropdown", "_native_select"))
+    if not native_selector:
+        return False
+
+    page.keyboard.press("Escape")
+    native_select = page.locator(native_selector).first
+    for candidate in candidates:
+        try:
+            native_select.select_option(label=candidate, force=True, timeout=3_000)
+            return True
+        except Exception:
+            continue
+    return False
 
 
 def open_dropdown(page: Page, dropdown, candidates: list[str]) -> None:
