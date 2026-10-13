@@ -10,6 +10,17 @@ SELECTORS = {
 
     "hs_code_input": "input[placeholder*='6자리']",
     "product_name_input": "input[placeholder*='음료']",
+    # 사이트 문구가 바뀌어 위 selector가 맞지 않을 때 순서대로 시도합니다.
+    "product_name_input_fallbacks": [
+        "xpath=//label[contains(normalize-space(.), '수출품명')]/following::input[1]",
+        "xpath=//label[contains(normalize-space(.), '품목명')]/following::input[1]",
+        "xpath=//*[self::label or self::p or self::span or self::div][normalize-space(text())='수출품명' or normalize-space(text())='품목명']/following::input[1]",
+        "input[placeholder*='품명']",
+        "input[placeholder*='품목']",
+        "textarea[placeholder*='음료']",
+        "textarea[placeholder*='품명']",
+        "textarea[placeholder*='품목']",
+    ],
     "export_scale_dropdown": "xpath=//label[contains(normalize-space(.), '수출액 규모')]/following-sibling::button[@role='combobox'][1]",
 
     "export_experience_first": "text=처음입니다",

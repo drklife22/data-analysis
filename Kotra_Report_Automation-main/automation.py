@@ -198,9 +198,10 @@ def fill_form(page: Page, row_data: dict[str, Any]) -> None:
         selector_key = field_info["selector_key"]
 
         if field_type == "input":
-            selector = SELECTORS[selector_key]
-            locator = page.locator(selector).first
-            locator.wait_for(state="visible", timeout=ELEMENT_TIMEOUT_MS)
+            locator = find_input_locator(page, selector_key, required=field_info.get("required", False))
+            if locator is None:
+                # 선택 입력칸(예: 수출품명)은 화면에서 찾지 못해도 건너뛰고 계속 진행합니다.
+                continue
             locator.scroll_into_view_if_needed()
             locator.fill(value)
 
@@ -215,6 +216,29 @@ def fill_form(page: Page, row_data: dict[str, Any]) -> None:
 
         else:
             raise ValueError(f"지원하지 않는 입력 타입입니다: {field_type}")
+
+
+def find_input_locator(page: Page, selector_key: str, required: bool = True):
+    """
+    기본 selector와 `<selector_key>_fallbacks` 목록을 번갈아 확인해 먼저 보이는 입력칸을 반환한다.
+    필수 입력칸이 아니면 짧게만 기다리고, 끝내 못 찾으면 None을 반환한다.
+    """
+    selectors = [SELECTORS[selector_key], *SELECTORS.get(f"{selector_key}_fallbacks", [])]
+    locators = [page.locator(selector).first for selector in selectors]
+    timeout_ms = ELEMENT_TIMEOUT_MS if required else min(ELEMENT_TIMEOUT_MS, 15_000)
+
+    deadline = datetime.now().timestamp() + timeout_ms / 1000
+    while datetime.now().timestamp() < deadline:
+        for locator in locators:
+            if is_visible(locator):
+                return locator
+        page.wait_for_timeout(200)
+
+    if not required:
+        return None
+
+    joined = ", ".join(selectors)
+    raise PlaywrightTimeoutError(f"입력칸을 찾지 못했습니다({selector_key}). 시도한 selector: {joined}")
 
 
 def select_dropdown(page: Page, selector_key: str, value: str, field_info: dict[str, Any] | None = None) -> None:
