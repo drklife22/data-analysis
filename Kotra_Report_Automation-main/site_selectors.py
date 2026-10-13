@@ -24,6 +24,13 @@ SELECTORS = {
         "textarea[placeholder*='품목']",
     ],
     "export_scale_dropdown": "xpath=//label[contains(normalize-space(.), '수출액 규모')]/following-sibling::button[@role='combobox'][1]",
+    "export_scale_dropdown_fallbacks": [
+        "button[role='combobox']:has-text('수출액 규모')",
+        "xpath=//label[contains(normalize-space(.), '수출액 규모')]/following::button[@role='combobox'][1]",
+        "button[role='combobox']",
+    ],
+    # 드롭다운 버튼 옆에 숨겨진 기본 <select> (옵션 value: 내수/초보/유망/성장/선도)
+    "export_scale_native_select": "select:has(option[value='초보'])",
 
     "export_experience_first": "text=처음입니다",
     "export_experience_has": "text=수출 경험 있음",

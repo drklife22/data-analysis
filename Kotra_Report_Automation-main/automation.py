@@ -242,26 +242,56 @@ def find_input_locator(page: Page, selector_key: str, required: bool = True):
 
 
 def select_dropdown(page: Page, selector_key: str, value: str, field_info: dict[str, Any] | None = None) -> None:
-    selector = SELECTORS[selector_key]
-    dropdown = page.locator(selector).first
-    dropdown.wait_for(state="visible", timeout=ELEMENT_TIMEOUT_MS)
+    dropdown = find_input_locator(page, selector_key)
     dropdown.scroll_into_view_if_needed()
 
     candidates = dropdown_value_candidates(value, field_info or {})
-    open_dropdown(page, dropdown, candidates)
+    attempts = [
+        lambda: open_dropdown(page, dropdown, candidates) or click_dropdown_option(page, candidates),
+        lambda: select_dropdown_by_keyboard(page, dropdown, candidates[0], field_info or {}),
+        lambda: open_dropdown(page, dropdown, candidates) or click_dropdown_option(page, candidates),
+        lambda: select_native_option(page, selector_key, candidates),
+    ]
 
-    if click_dropdown_option(page, candidates):
-        return
-
-    if select_dropdown_by_keyboard(page, dropdown, candidates[0], field_info or {}):
-        return
-
-    open_dropdown(page, dropdown, candidates)
-    if click_dropdown_option(page, candidates):
-        return
+    # 각 방법이 끝난 뒤 드롭다운 버튼에 선택값이 실제로 표시됐는지 확인한다.
+    for attempt in attempts:
+        if attempt() and dropdown_shows_value(page, dropdown, candidates):
+            return
 
     joined = ", ".join(candidates)
     raise ValueError(f"드롭다운 옵션을 찾지 못했습니다. 입력값: {value}, 시도한 값: {joined}")
+
+
+def dropdown_shows_value(page: Page, dropdown, candidates: list[str], timeout_ms: int = 2_000) -> bool:
+    deadline = datetime.now().timestamp() + timeout_ms / 1000
+    while datetime.now().timestamp() < deadline:
+        try:
+            text = dropdown.inner_text(timeout=1_000)
+        except Exception:
+            text = ""
+        if any(candidate in text for candidate in candidates):
+            return True
+        page.wait_for_timeout(100)
+    return False
+
+
+def select_native_option(page: Page, selector_key: str, candidates: list[str]) -> bool:
+    """
+    Radix/shadcn Select는 화면 밖에 숨긴 <select>를 함께 두므로, 마지막 수단으로 그 값을 직접 고른다.
+    """
+    native_selector = SELECTORS.get(selector_key.replace("_dropdown", "_native_select"))
+    if not native_selector:
+        return False
+
+    page.keyboard.press("Escape")
+    native_select = page.locator(native_selector).first
+    for candidate in candidates:
+        try:
+            native_select.select_option(label=candidate, force=True, timeout=3_000)
+            return True
+        except Exception:
+            continue
+    return False
 
 
 def open_dropdown(page: Page, dropdown, candidates: list[str]) -> None:
