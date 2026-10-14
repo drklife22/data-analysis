@@ -626,6 +626,7 @@ def download_report(
     timeout_ms: int = TIMEOUT_MS,
     status_callback: StatusCallback | None = None,
     force_stop_requested: StopFlag | None = None,
+    company_name: str = "",
 ) -> Path:
     save_path = Path(save_path)
     if save_path.exists() and save_path.is_dir():
@@ -647,19 +648,32 @@ def download_report(
         download_button.click()
 
     download = download_info.value
-    final_save_path = resolve_download_save_path(download, save_path)
+    final_save_path = resolve_download_save_path(download, save_path, company_name)
     download.save_as(str(final_save_path))
     if status_callback:
         status_callback("PDF 다운로드가 완료되었습니다.")
     return final_save_path
 
 
-def resolve_download_save_path(download: Any, save_path: Path) -> Path:
+def resolve_download_save_path(download: Any, save_path: Path, company_name: str = "") -> Path:
     if not (save_path.exists() and save_path.is_dir()):
         return save_path
 
     suggested_filename = str(getattr(download, "suggested_filename", "") or "").strip() or "report.pdf"
-    return unique_file_path(save_path / suggested_filename)
+    return unique_file_path(save_path / append_company_name(suggested_filename, company_name))
+
+
+def append_company_name(filename: str, company_name: str) -> str:
+    """
+    사이트 기본 파일명 뒤에 회사명을 붙인다.
+    예: 나이지리아_스위치기어(853720)_수출시장분석보고서.pdf -> ..._수출시장분석보고서_회사명.pdf
+    """
+    company = re.sub(r'[\\/:*?"<>|]', "_", str(company_name or "")).strip().rstrip(".")
+    if not company:
+        return filename
+
+    path = Path(filename)
+    return f"{path.stem}_{company}{path.suffix}"
 
 
 def unique_file_path(path: Path) -> Path:
@@ -775,7 +789,14 @@ def process_row(
         try:
             if status_callback:
                 status_callback("보고서 생성 요청을 보냈습니다.")
-            return download_report(page, save_path, timeout_ms, status_callback, force_stop_requested)
+            return download_report(
+                page,
+                save_path,
+                timeout_ms,
+                status_callback,
+                force_stop_requested,
+                company_name=str(row_data.get("company_name", "")),
+            )
         except RuntimeError as exc:
             last_error = exc
             if "초기 입력 화면" in str(exc):
@@ -1625,6 +1646,7 @@ def read_input_excel(input_excel_path: str | Path) -> list[dict[str, Any]]:
                 raw_value = find_category_value(record)
             row[key] = normalize_field_value(key, raw_value)
 
+        row["company_name"] = get_source_value(record, "company_name")
         row_index_value = normalize_row_index(get_source_value(record, "row_index"), idx)
         row["row_index"] = row_index_value
         row["excel_row_number"] = idx + 1
@@ -1676,6 +1698,7 @@ def read_failed_rows(log_dir: str | Path) -> list[dict[str, Any]]:
             raw_value = get_source_value(record, key)
             row[key] = normalize_field_value(key, raw_value)
 
+        row["company_name"] = get_source_value(record, "company_name")
         row["row_index"] = int(row_index_text) if row_index_text.isdigit() else fallback_index
         rows.append(row)
 

@@ -18,6 +18,7 @@ SUCCESS_COLUMNS = [
     "export_scale",
     "export_experience",
     "target_country",
+    "company_name",
     "saved_file",
     "completed_at",
 ]
@@ -29,6 +30,7 @@ FAILED_COLUMNS = [
     "export_scale",
     "export_experience",
     "target_country",
+    "company_name",
     "error_message",
     "failed_at",
 ]
@@ -78,4 +80,5 @@ def _base_row(row_data: dict[str, Any]) -> dict[str, Any]:
         "export_scale": row_data.get("export_scale", ""),
         "export_experience": row_data.get("export_experience", ""),
         "target_country": row_data.get("target_country", ""),
+        "company_name": row_data.get("company_name", ""),
     }

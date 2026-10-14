@@ -78,6 +78,7 @@ SOURCE_COLUMN_ALIASES = {
         "No",
         "no",
     ],
+    "company_name": ["company_name", "회사명", "기업명", "업체명"],
     "hs_code": ["hs_code", "HS CODE", "HSCODE"],
     "product_name": ["product_name", "수출품명", "품목명"],
     "export_scale": [

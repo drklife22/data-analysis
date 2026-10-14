@@ -205,7 +205,7 @@ def list_report_files(report_dir: Path, *, recursive: bool) -> list[Path]:
 def parse_report_file(path: Path) -> dict[str, Any]:
     name = path.name
     current = re.match(
-        rf"^(?P<country>[^_]+)_(?P<product>.+)\((?P<hs_code>[^()]+)\)_{REPORT_SUFFIX}(?:\s*\(\d+\))?\.pdf$",
+        rf"^(?P<country>[^_]+)_(?P<product>.+)\((?P<hs_code>[^()]+)\)_{REPORT_SUFFIX}(?:_(?P<company>.+?))?(?:\s*\(\d+\))?\.pdf$",
         name,
         flags=re.IGNORECASE,
     )
