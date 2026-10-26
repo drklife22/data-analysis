@@ -616,7 +616,7 @@ namespace WalkingFriend
             else if (State == PetState.IdleCry)
             { look.Sprite = FriendData.Current.Hungry ? FeatureArt.IdleCry : FeatureArt.Sit; look.Left = false; look.Sy = (float)(1 + Math.Sin(StateT * 8) * .012); if (FriendData.Current.Hungry) lookJitterX = Math.Sin(StateT * 21) * .45 * S; }
             else if (State == PetState.Resting || State == PetState.Eating)
-            { look.Sprite = State == PetState.Eating ? FeatureArt.Eating[frame % 4] : FeatureArt.Sit; look.Sy = (float)(1 + Math.Sin(animT * 2.0) * .012); }
+            { look.Sprite = State == PetState.Eating ? FeatureArt.Eating[(int)(StateT / .7) % 4] : FeatureArt.Sit; look.Sy = (float)(1 + Math.Sin(animT * 2.0) * .012); }
             else if (State == PetState.Hop)
             {
                 look.Sprite = Sprites.WalkingFrame(animT); double t = StateT / extraDuration;
