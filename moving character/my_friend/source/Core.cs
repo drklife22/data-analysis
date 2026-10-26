@@ -2967,6 +2967,8 @@ namespace WalkingFriend
 
 		public static Sprite Wake;
 
+		public static Sprite Dance;
+
 		public static float Scale = 1f;
 
 		public const float StoredToMini = 0.333333343f;
@@ -2989,6 +2991,7 @@ namespace WalkingFriend
 			Walk2 = Make("walk1.png", f, true);
 			Nap = Make("wake.png", f);
 			Wake = Make("wake.png", f);
+			Dance = Make("dance.png", f);
 			WalkFrames = new Sprite[12];
 			WalkFrames[0] = MakeAnimated("walk1.png", f, true, 0);
 			WalkFrames[1] = MakeAnimated("walk1.png", f, true, 1);

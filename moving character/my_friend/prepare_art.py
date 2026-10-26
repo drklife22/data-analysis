@@ -15,7 +15,8 @@ assets = here / "assets"
 # 프로그램 안의 그림 이름 : (사진 파일, 좌우 뒤집기)
 POSES = {
     "walk1.png": ("walking.PNG", False),       # 걷기
-    "wake.png": ("dancing.PNG", False),        # 기본으로 서 있기
+    "wake.png": ("standing.PNG", False),       # 기본으로 서 있기
+    "dance.png": ("dancing.PNG", False),       # 몰래 하는 군무
     "sit.png": ("sit.PNG", False),             # 앉아 쉬기
     "eat2.png": ("drinking2.PNG", False),      # 간식 먹기
     "slide.png": ("lying.PNG", False),         # 미끄러지기 (머리가 왼쪽)
