@@ -24,12 +24,11 @@ namespace WalkingFriend
             Chase = LoadFit("chase.png", (int)Math.Round(w * 1.4), h, true);
             Climb = new Sprite[12]; Ceiling = new Sprite[12]; Held = new Sprite[12];
             using (Bitmap raw = Raw("climb.png"))
-            using (Bitmap baseImage = Fit(raw, w, (int)Math.Round(h * .76)))
+            using (Bitmap baseImage = Fit(raw, w - 8, (int)Math.Round(h * .76)))
             {
                 for (int i = 0; i < 12; i++)
                 {
-                    Bitmap arms = Paws(baseImage, i);
-                    Bitmap up = OuterOutline(arms);
+                    Bitmap up = OuterOutline(Glide(baseImage, w, i));
                     Bitmap ceiling = (Bitmap)up.Clone();
                     ceiling.RotateFlip(RotateFlipType.RotateNoneFlipY);
                     Ceiling[i] = ToSprite(ceiling, false);
@@ -110,6 +109,15 @@ namespace WalkingFriend
         {
             Bitmap mirror = (Bitmap)b.Clone(); mirror.RotateFlip(RotateFlipType.RotateNoneFlipX);
             return new Sprite { Right = facesLeft ? mirror : b, Left = facesLeft ? b : mirror };
+        }
+        private static Bitmap Glide(Bitmap b, int width, int frame)
+        {
+            // The whole airplane surges gently along its path, so no single part wobbles on its own.
+            Bitmap target = new Bitmap(width, b.Height, PixelFormat.Format32bppArgb);
+            float shift = (float)(Math.Sin(frame * Math.PI * 2 / 12.0) * width * .04);
+            using (Graphics g = Graphics.FromImage(target))
+            { Quality(g); g.Clear(Color.Transparent); g.DrawImage(b, (width - b.Width) / 2f + shift, 0, b.Width, b.Height); }
+            return target;
         }
         private static Bitmap Paws(Bitmap b, int frame)
         {
