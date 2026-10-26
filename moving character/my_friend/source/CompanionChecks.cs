@@ -64,6 +64,11 @@ namespace WalkingFriend
             Check(!fedCry, "fed friends never cry during normal click reactions");
             fedClick.SetState(PetState.IdleCry, world); Check(fedClick.GetLook(world.Now).Sprite != FeatureArt.IdleCry, "old crying state clears its tears as soon as hunger ends");
             fedClick.SetState(PetState.Walk, world); fedClick.Demonstrate(world, "cry"); Check(fedClick.State != PetState.TouchCry, "crying demonstration requires hunger");
+            var chaseWorld = new CheckWorld(); var chasePet = FloorPet(chaseWorld, 320, PetState.Walk); chasePet.Demonstrate(chaseWorld, "chase");
+            double chaseStart = chasePet.X; chaseWorld.Step(chasePet, .02); chaseWorld.Step(chasePet, .5);
+            Check(chasePet.State == PetState.Walk && chasePet.GetLook(chaseWorld.Now).Sprite == FeatureArt.Chase, "chase demonstration runs after the fish");
+            Check(Math.Abs(chasePet.X - chaseStart) > 34 * Sprites.Scale * PlayOptions.Current.Speed * .52 * 1.5, "chasing runs faster than walking");
+            chaseWorld.Step(chasePet, 4); Check(chasePet.GetLook(chaseWorld.Now).Sprite != FeatureArt.Chase, "chasing ends and normal walking returns");
             var restWorld = new CheckWorld(); var restPet = FloorPet(restWorld, 320, PetState.Walk);
             PlayOptions.Current.Idle = true; restWorld.Now = 100; restWorld.Step(restPet, .02);
             Check(restPet.State == PetState.Resting, "default autonomous sitting starts normally");
@@ -92,9 +97,11 @@ namespace WalkingFriend
             var positions = new Dictionary<Pet, PointF> { { fastA, new PointF(200, 400) }, { fastB, new PointF(450, 400) } };
             App.ResolveCompanionContacts(world, new List<Pet> { fastA, fastB }, positions);
             Check(fastA.X < fastB.X && !Overlap(fastA, fastB, world.Now), "fast slides cannot tunnel through each other");
-            var crowded = Enumerable.Range(0, 7).Select(i => FloorPet(world, 320, PetState.Walk)).ToList();
-            App.ResolveCompanionContacts(world, crowded, null);
-            bool clear = true; for (int i = 0; i < crowded.Count; i++) for (int j = i + 1; j < crowded.Count; j++) clear &= !Overlap(crowded[i], crowded[j], world.Now);
+            // Seven of the larger friends need more floor than the default 640px test screen.
+            var crowdWorld = new CheckWorld(1280);
+            var crowded = Enumerable.Range(0, 7).Select(i => FloorPet(crowdWorld, 640, PetState.Walk)).ToList();
+            App.ResolveCompanionContacts(crowdWorld, crowded, null);
+            bool clear = true; for (int i = 0; i < crowded.Count; i++) for (int j = i + 1; j < crowded.Count; j++) clear &= !Overlap(crowded[i], crowded[j], crowdWorld.Now);
             Check(clear, "seven overlapping friends settle into separate spaces");
             var dragged = FloorPet(world, 280, PetState.Drag); var standing = FloorPet(world, 281, PetState.Pause);
             App.ResolveCompanionContacts(world, new List<Pet> { dragged, standing }, null);

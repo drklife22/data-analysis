@@ -10,8 +10,8 @@ namespace WalkingFriend
 {
     internal static class FeatureArt
     {
-        internal static Sprite TouchCry, IdleCry, Sit, Slide;
-        internal static Sprite[] Helicopter, Climb, Ceiling, Held, Eating;
+        internal static Sprite TouchCry, IdleCry, Sit, Slide, Chase, Dizzy;
+        internal static Sprite[] Helicopter, Climb, ClimbDown, Ceiling, Held, Eating;
         internal static int CeilingTopInset;
         internal static int CeilingContactHeight { get { return Ceiling[0].H - CeilingTopInset; } }
         internal static void Load()
@@ -21,20 +21,22 @@ namespace WalkingFriend
             IdleCry = LoadFit("cry_idle.png", w, h, false);
             Sit = LoadFit("sit.png", w, h, false);
             Slide = LoadFit("slide.png", w, h, true);
-            Climb = new Sprite[12]; Ceiling = new Sprite[12]; Held = new Sprite[12];
+            Dizzy = LoadFit("dizzy.png", w, h, false);
+            Chase = LoadFit("chase.png", (int)Math.Round(w * 1.4), h, true);
+            Climb = new Sprite[12]; ClimbDown = new Sprite[12]; Ceiling = new Sprite[12]; Held = new Sprite[12];
             using (Bitmap raw = Raw("climb.png"))
-            using (Bitmap baseImage = Fit(raw, w, (int)Math.Round(h * .76)))
+            using (Bitmap baseImage = Fit(raw, w - 8, (int)Math.Round(h * .76)))
             {
                 for (int i = 0; i < 12; i++)
                 {
-                    Bitmap arms = Paws(baseImage, i);
-                    Bitmap up = OuterOutline(arms);
+                    Bitmap up = OuterOutline(Glide(baseImage, w));
                     Bitmap ceiling = (Bitmap)up.Clone();
                     ceiling.RotateFlip(RotateFlipType.RotateNoneFlipY);
                     Ceiling[i] = ToSprite(ceiling, false);
-                    // Head up, with the paws and the whole underside against the wall.
+                    // Nose up, with the whole underside against the wall; climbing down turns the nose to the floor.
                     up.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    Climb[i] = ToSprite(up, false);
+                    Bitmap down = (Bitmap)up.Clone(); down.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    Climb[i] = ToSprite(up, false); ClimbDown[i] = ToSprite(down, false);
                 }
             }
             using (Bitmap raw = Raw("held.png"))
@@ -69,7 +71,7 @@ namespace WalkingFriend
             }
             Eating = new Sprite[4];
             Sprite sip = LoadFit("eat2.png", w, h, false);
-            for (int i = 0; i < 4; i++) Eating[i] = i % 2 == 0 ? Sit : sip;
+            for (int i = 0; i < 4; i++) Eating[i] = sip;
         }
         private static Bitmap Raw(string name)
         {
@@ -109,6 +111,14 @@ namespace WalkingFriend
         {
             Bitmap mirror = (Bitmap)b.Clone(); mirror.RotateFlip(RotateFlipType.RotateNoneFlipX);
             return new Sprite { Right = facesLeft ? mirror : b, Left = facesLeft ? b : mirror };
+        }
+        private static Bitmap Glide(Bitmap b, int width)
+        {
+            // The airplane glides steadily; any wobble of its own reads as stop-and-go against the even travel speed.
+            Bitmap target = new Bitmap(width, b.Height, PixelFormat.Format32bppArgb);
+            using (Graphics g = Graphics.FromImage(target))
+            { Quality(g); g.Clear(Color.Transparent); g.DrawImage(b, (width - b.Width) / 2f, 0, b.Width, b.Height); }
+            return target;
         }
         private static Bitmap Paws(Bitmap b, int frame)
         {

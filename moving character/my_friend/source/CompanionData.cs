@@ -156,7 +156,7 @@ namespace WalkingFriend
             panel.Controls.Add(FriendUI.Button("생활 설정 저장", delegate
             {
                 options.HungerMinutes = (int)hunger.Value; options.HungerCry = cry.Checked; options.Secrets = secrets.Checked;
-                if (!options.Save()) MessageBox.Show(this, "생활 설정을 저장하지 못했어.", "걸어다니는 친구"); UpdateLifeView();
+                if (!options.Save()) MessageBox.Show(this, "생활 설정을 저장하지 못했어.", "마루는 강쥐"); UpdateLifeView();
             }));
             discoverySummary = FriendUI.Label(""); discoverySummary.MaximumSize = new Size(430, 0); panel.Controls.Add(discoverySummary);
             var hints = FriendUI.Label("어질어질: 친구 머리 위에서 마우스를 한 바퀴 빙글빙글.\n몰래 군무: 친구 둘 이상일 때 커서를 떨어뜨리고 4초.\n우클릭 → 동작 바로 보기에서도 확인할 수 있어요.");

@@ -20,10 +20,10 @@ namespace WalkingFriend
         {
             Sprites.Load(1);
             var items = new Dictionary<string, Sprite>();
-            items.Add("walk", Sprites.Walk1); items.Add("nap", Sprites.Nap); items.Add("wake", Sprites.Wake);
+            items.Add("walk", Sprites.Walk1); items.Add("nap", Sprites.Nap); items.Add("wake", Sprites.Wake); items.Add("dance", Sprites.Dance);
             for (int i = 0; i < Sprites.WalkFrames.Length; i++) items.Add("walk/" + i, Sprites.WalkFrames[i]);
-            items.Add("touch", FeatureArt.TouchCry); items.Add("weep", FeatureArt.IdleCry); items.Add("sit", FeatureArt.Sit); items.Add("slide", FeatureArt.Slide);
-            Add(items, "rotor", FeatureArt.Helicopter); Add(items, "climb", FeatureArt.Climb); Add(items, "ceiling", FeatureArt.Ceiling); Add(items, "held", FeatureArt.Held); Add(items, "eat", FeatureArt.Eating);
+            items.Add("touch", FeatureArt.TouchCry); items.Add("weep", FeatureArt.IdleCry); items.Add("sit", FeatureArt.Sit); items.Add("slide", FeatureArt.Slide); items.Add("chase", FeatureArt.Chase); items.Add("dizzy", FeatureArt.Dizzy);
+            Add(items, "rotor", FeatureArt.Helicopter); Add(items, "climb", FeatureArt.Climb); Add(items, "climbdown", FeatureArt.ClimbDown); Add(items, "ceiling", FeatureArt.Ceiling); Add(items, "held", FeatureArt.Held); Add(items, "eat", FeatureArt.Eating);
             for (int i = 0; i < Sprites.StopFrames.Length; i++) for (int j = 1; j < 8; j++)
             { items.Add("stop/" + i + "/" + j, Sprites.StopFrames[i][j]); items.Add("start/" + i + "/" + j, Sprites.StartFrames[i][j]); }
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path)));
@@ -74,10 +74,10 @@ namespace WalkingFriend
                     }
                     sprites.Add(name, new Sprite { Right = pair[0], Left = pair[1] });
                 }
-                Sprites.Scale = dpi; Sprites.Walk1 = sprites["walk"]; Sprites.Walk2 = Sprites.Walk1; Sprites.Nap = sprites["nap"]; Sprites.Wake = sprites["wake"];
+                Sprites.Scale = dpi; Sprites.Walk1 = sprites["walk"]; Sprites.Walk2 = Sprites.Walk1; Sprites.Nap = sprites["nap"]; Sprites.Wake = sprites["wake"]; Sprites.Dance = sprites["dance"];
                 Sprites.WalkFrames = Read(sprites, "walk", 12);
-                FeatureArt.TouchCry = sprites["touch"]; FeatureArt.IdleCry = sprites["weep"]; FeatureArt.Sit = sprites["sit"]; FeatureArt.Slide = sprites["slide"];
-                FeatureArt.Helicopter = Read(sprites, "rotor", 24); FeatureArt.Climb = Read(sprites, "climb", 12); FeatureArt.Ceiling = Read(sprites, "ceiling", 12); FeatureArt.Held = Read(sprites, "held", 12); FeatureArt.Eating = Read(sprites, "eat", 4);
+                FeatureArt.TouchCry = sprites["touch"]; FeatureArt.IdleCry = sprites["weep"]; FeatureArt.Sit = sprites["sit"]; FeatureArt.Slide = sprites["slide"]; FeatureArt.Chase = sprites["chase"]; FeatureArt.Dizzy = sprites["dizzy"];
+                FeatureArt.Helicopter = Read(sprites, "rotor", 24); FeatureArt.Climb = Read(sprites, "climb", 12); FeatureArt.ClimbDown = Read(sprites, "climbdown", 12); FeatureArt.Ceiling = Read(sprites, "ceiling", 12); FeatureArt.Held = Read(sprites, "held", 12); FeatureArt.Eating = Read(sprites, "eat", 4);
                 FeatureArt.CeilingTopInset = FeatureArt.Bounds(FeatureArt.Ceiling[0].Right).Top;
                 Sprites.StopFrames = new Sprite[12][]; Sprites.StartFrames = new Sprite[12][];
                 for (int i = 0; i < 12; i++)
@@ -104,7 +104,7 @@ namespace WalkingFriend
             if (LogPath == null)
             {
                 foreach (string dir in new[] { AppDomain.CurrentDomain.BaseDirectory, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "걸어다니는친구") })
-                    try { Directory.CreateDirectory(dir); string p = Path.Combine(dir, "걸어다니는친구_실행기록.txt"); File.WriteAllText(p, "걸어다니는 친구 1.0\r\n"); LogPath = p; break; } catch { }
+                    try { Directory.CreateDirectory(dir); string p = Path.Combine(dir, "걸어다니는친구_실행기록.txt"); File.WriteAllText(p, "마루는 강쥐 1.0\r\n"); LogPath = p; break; } catch { }
             }
             try { if (LogPath != null) File.AppendAllText(LogPath, DateTime.Now.ToString("HH:mm:ss.fff") + " " + phase + Environment.NewLine); } catch { }
         }
@@ -112,7 +112,7 @@ namespace WalkingFriend
         {
             string phase = Phase; FeatureLog.Write(error);
             Mark("실패: " + phase + "\r\n" + error);
-            try { MessageBox.Show("친구를 화면에 표시하지 못했어.\n\n멈춘 부분: " + phase + "\n" + error.Message + "\n\n실행 기록: " + (LogPath ?? "저장하지 못함"), "걸어다니는 친구 · 실행 확인", MessageBoxButtons.OK, MessageBoxIcon.Error); } catch { }
+            try { MessageBox.Show("친구를 화면에 표시하지 못했어.\n\n멈춘 부분: " + phase + "\n" + error.Message + "\n\n실행 기록: " + (LogPath ?? "저장하지 못함"), "마루는 강쥐 · 실행 확인", MessageBoxButtons.OK, MessageBoxIcon.Error); } catch { }
         }
     }
 

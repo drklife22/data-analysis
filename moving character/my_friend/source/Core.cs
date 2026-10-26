@@ -16,8 +16,8 @@ using System.Threading;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-[assembly: AssemblyTitle("걸어다니는 친구")]
-[assembly: AssemblyProduct("걸어다니는 친구")]
+[assembly: AssemblyTitle("마루는 강쥐")]
+[assembly: AssemblyProduct("마루는 강쥐")]
 [assembly: AssemblyFileVersion("2.0.6.0")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows = true)]
 [assembly: AssemblyVersion("2.0.6.0")]
@@ -27,7 +27,7 @@ namespace WalkingFriend
 	{
 		public const int MaxPets = 16;
 
-		public const string Title = "걸어다니는 친구";
+		public const string Title = "마루는 강쥐";
 
 		private readonly List<PetWindow> windows = new List<PetWindow>();
 
@@ -303,7 +303,7 @@ namespace WalkingFriend
 			tray = new NotifyIcon
 			{
 				Icon = TrayIconImage,
-				Text = "걸어다니는 친구",
+				Text = "마루는 강쥐",
 				ContextMenuStrip = menu,
 				Visible = true
 			};
@@ -1158,7 +1158,7 @@ namespace WalkingFriend
 		{
 			get
 			{
-				return 34f * S;
+				return 34f * S * (Chasing ? 2.3 : 1.0);
 			}
 		}
 
@@ -1989,7 +1989,7 @@ namespace WalkingFriend
 			base.ShowInTaskbar = false;
 			base.StartPosition = FormStartPosition.Manual;
 			base.TopMost = true;
-			Text = "걸어다니는 친구";
+			Text = "마루는 강쥐";
 			base.Size = new Size(1, 1);
 			base.Location = new Point(-32000, -32000);
 		}
@@ -2149,7 +2149,7 @@ namespace WalkingFriend
                 {
                     if (!created)
                     {
-                        MessageBox.Show("친구가 이미 실행 중이야.\n작업표시줄 친구 아이콘을 우클릭해서 ‘화면 가운데로 다시 부르기’를 눌러줘.", "걸어다니는 친구", MessageBoxButtons.OK, MessageBoxIcon.Information); return;
+                        MessageBox.Show("친구가 이미 실행 중이야.\n작업표시줄 친구 아이콘을 우클릭해서 ‘화면 가운데로 다시 부르기’를 눌러줘.", "마루는 강쥐", MessageBoxButtons.OK, MessageBoxIcon.Information); return;
                     }
                     try { Native.SetProcessDPIAware(); } catch { }
                     Application.EnableVisualStyles(); Application.SetCompatibleTextRenderingDefault(false);
@@ -2405,7 +2405,7 @@ namespace WalkingFriend
 		public string Save()
 		{
 			StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.AppendLine("; 걸어다니는 친구 설정 파일. 지우면 처음 설정으로 돌아가요.");
+			stringBuilder.AppendLine("; 마루는 강쥐 설정 파일. 지우면 처음 설정으로 돌아가요.");
 			stringBuilder.AppendLine("[알림]");
 			stringBuilder.AppendLine("LunchOn=" + ((!LunchOn) ? "0" : "1"));
 			stringBuilder.AppendLine("LunchTime=" + LunchTime);
@@ -2575,7 +2575,7 @@ namespace WalkingFriend
 		{
 			SettingsForm settingsForm = this;
 			this.app = app;
-			Text = "걸어다니는 친구 - 알림 설정";
+			Text = "마루는 강쥐 - 알림 설정";
 			base.FormBorderStyle = FormBorderStyle.FixedDialog;
 			base.MaximizeBox = false;
 			base.MinimizeBox = false;
@@ -2824,7 +2824,7 @@ namespace WalkingFriend
 
 		private void Warn(string m)
 		{
-			MessageBox.Show(this, m, "걸어다니는 친구", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			MessageBox.Show(this, m, "마루는 강쥐", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 		}
 
 		public static CheckBox AddHourlyControl(TableLayoutPanel panel, bool enabled)
@@ -2875,7 +2875,7 @@ namespace WalkingFriend
 
 		internal void AttachOptions()
 		{
-			Text = "걸어다니는 친구 · 자동 시작 / 알림 설정";
+			Text = "마루는 강쥐 · 자동 시작 / 알림 설정";
 			MinimumSize = new Size(600, 0);
 			TableLayoutPanel tableLayoutPanel = (TableLayoutPanel)cHourly.Parent;
 			tableLayoutPanel.SuspendLayout();
@@ -2967,9 +2967,14 @@ namespace WalkingFriend
 
 		public static Sprite Wake;
 
+		public static Sprite Dance;
+
 		public static float Scale = 1f;
 
 		public const float StoredToMini = 0.333333343f;
+
+		// The new character has a smaller body inside the frame than the round original, so every picture is drawn larger.
+		public const float ArtScale = 1.4f;
 
 		internal static Sprite[] WalkFrames;
 
@@ -2981,11 +2986,12 @@ namespace WalkingFriend
 		{
 			if (StartupArt.TryLoad(dpiScale)) return;
 			Scale = dpiScale;
-			float f = 0.333333343f * dpiScale;
+			float f = 0.333333343f * dpiScale * ArtScale;
 			Walk1 = Make("walk1.png", f, true);
 			Walk2 = Make("walk1.png", f, true);
 			Nap = Make("wake.png", f);
 			Wake = Make("wake.png", f);
+			Dance = Make("dance.png", f);
 			WalkFrames = new Sprite[12];
 			WalkFrames[0] = MakeAnimated("walk1.png", f, true, 0);
 			WalkFrames[1] = MakeAnimated("walk1.png", f, true, 1);

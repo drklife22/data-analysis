@@ -140,11 +140,11 @@ namespace WalkingFriend
             if (IsPilotFlight)
             { look.Secret |= 2; look.SecretPhase = (float)animT; }
             if (State == PetState.Dizzy)
-            { look.Sprite = FeatureArt.Sit; look.Left = false; look.Angle = (float)(Math.Sin(StateT * 7) * 6); look.Secret |= 4; look.SecretPhase = (float)StateT; }
+            { look.Sprite = FeatureArt.Dizzy; look.Left = false; look.Angle = (float)(Math.Sin(StateT * 7) * 6); }
             if (State == PetState.SecretDance)
             {
                 double phase = now - danceStarted;
-                look.Sprite = Sprites.Wake; look.Left = ((int)(phase / .6) % 2 == 0);
+                look.Sprite = Sprites.Dance; look.Left = ((int)(phase / .6) % 2 == 0);
                 look.HopY = (float)(-Math.Abs(Math.Sin(phase * Math.PI * 2.5)) * 12 * S);
                 look.Angle = (float)(Math.Sin(phase * Math.PI * 2.5) * 9); look.Secret |= 8; look.SecretPhase = (float)phase;
             }
