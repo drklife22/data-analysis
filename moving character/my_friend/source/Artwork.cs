@@ -10,7 +10,7 @@ namespace WalkingFriend
 {
     internal static class FeatureArt
     {
-        internal static Sprite TouchCry, IdleCry, Sit, Slide;
+        internal static Sprite TouchCry, IdleCry, Sit, Slide, Chase;
         internal static Sprite[] Helicopter, Climb, Ceiling, Held, Eating;
         internal static int CeilingTopInset;
         internal static int CeilingContactHeight { get { return Ceiling[0].H - CeilingTopInset; } }
@@ -21,6 +21,7 @@ namespace WalkingFriend
             IdleCry = LoadFit("cry_idle.png", w, h, false);
             Sit = LoadFit("sit.png", w, h, false);
             Slide = LoadFit("slide.png", w, h, true);
+            Chase = LoadFit("chase.png", (int)Math.Round(w * 1.4), h, true);
             Climb = new Sprite[12]; Ceiling = new Sprite[12]; Held = new Sprite[12];
             using (Bitmap raw = Raw("climb.png"))
             using (Bitmap baseImage = Fit(raw, w, (int)Math.Round(h * .76)))
@@ -68,8 +69,8 @@ namespace WalkingFriend
                 }
             }
             Eating = new Sprite[4];
-            Sprite sip = LoadFit("eat2.png", w, h, false);
-            for (int i = 0; i < 4; i++) Eating[i] = i % 2 == 0 ? Sit : sip;
+            Sprite cup = LoadFit("eat1.png", w, h, false), sip = LoadFit("eat2.png", w, h, false);
+            for (int i = 0; i < 4; i++) Eating[i] = i % 2 == 0 ? cup : sip;
         }
         private static Bitmap Raw(string name)
         {

@@ -1158,7 +1158,7 @@ namespace WalkingFriend
 		{
 			get
 			{
-				return 34f * S;
+				return 34f * S * (Chasing ? 2.3 : 1.0);
 			}
 		}
 

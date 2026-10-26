@@ -64,6 +64,11 @@ namespace WalkingFriend
             Check(!fedCry, "fed friends never cry during normal click reactions");
             fedClick.SetState(PetState.IdleCry, world); Check(fedClick.GetLook(world.Now).Sprite != FeatureArt.IdleCry, "old crying state clears its tears as soon as hunger ends");
             fedClick.SetState(PetState.Walk, world); fedClick.Demonstrate(world, "cry"); Check(fedClick.State != PetState.TouchCry, "crying demonstration requires hunger");
+            var chaseWorld = new CheckWorld(); var chasePet = FloorPet(chaseWorld, 320, PetState.Walk); chasePet.Demonstrate(chaseWorld, "chase");
+            double chaseStart = chasePet.X; chaseWorld.Step(chasePet, .02); chaseWorld.Step(chasePet, .5);
+            Check(chasePet.State == PetState.Walk && chasePet.GetLook(chaseWorld.Now).Sprite == FeatureArt.Chase, "chase demonstration runs after the fish");
+            Check(Math.Abs(chasePet.X - chaseStart) > 34 * Sprites.Scale * PlayOptions.Current.Speed * .52 * 1.5, "chasing runs faster than walking");
+            chaseWorld.Step(chasePet, 4); Check(chasePet.GetLook(chaseWorld.Now).Sprite != FeatureArt.Chase, "chasing ends and normal walking returns");
             var restWorld = new CheckWorld(); var restPet = FloorPet(restWorld, 320, PetState.Walk);
             PlayOptions.Current.Idle = true; restWorld.Now = 100; restWorld.Step(restPet, .02);
             Check(restPet.State == PetState.Resting, "default autonomous sitting starts normally");

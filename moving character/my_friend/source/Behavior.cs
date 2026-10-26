@@ -389,11 +389,13 @@ namespace WalkingFriend
             if (kind == "weep") { extraDuration = 3; SetState(PetState.IdleCry, w); }
             if (kind == "hop") { extraDuration = .7; SetState(PetState.Hop, w); }
             if (kind == "slide") { extraDuration = .85; SetState(PetState.Sliding, w); }
+            if (kind == "chase") { ClearAttachments(); SnapToFloor(w); SetState(PetState.Walk, w); stateDur = Math.Max(stateDur, 3.5); chaseUntil = w.Now + 3; }
             DelayIdle(w);
         }
         internal bool AdvanceFeatures(IWorld w, double dt)
         {
             var opts = PlayOptions.Current;
+            chaseClock = w.Now;
             if (AdvanceSecrets(w, dt)) return true;
             bool focus = PlayOptions.IsFocus(DateTime.Now);
             if (focus && !focusWasOn && (SupportWindow != IntPtr.Zero || State == PetState.Wall || State == PetState.Ceiling || State == PetState.WindowClimb))
@@ -433,7 +435,13 @@ namespace WalkingFriend
                     SetState(PetState.Sliding, w); nextEscape = w.Now + 2.5; hoverSince = -1; DelayIdle(w);
                 }
                 else if (!focus && opts.Follow && !opts.Escape && w.Now > mouseGrace && Math.Abs(mouse.Y - Y) < 140 * S && !InputHeld && Math.Abs(mouse.X - X) > Sprites.Walk1.W)
+                {
                     Dir = mouse.X < X ? -1 : 1;
+                    chaseUntil = Math.Max(chaseUntil, w.Now + .25);
+                }
+                if (nextChase == 0) nextChase = w.Now + 25 + w.Rng.NextDouble() * 20;
+                if (!focus && State == PetState.Walk && SupportWindow == IntPtr.Zero && approachWindow == IntPtr.Zero && w.Now > nextChase)
+                { nextChase = w.Now + 45 + w.Rng.NextDouble() * 45; chaseUntil = w.Now + 2.2 + w.Rng.NextDouble(); }
                 if (opts.Idle && w.Now >= nextIdle && !InputHeld && !near && (State == PetState.Walk || State == PetState.Pause))
                 {
                     extraDuration = opts.ShortRest ? (focus ? 4 : 6 + w.Rng.NextDouble() * 5) : 20 + w.Rng.NextDouble() * 10;
@@ -625,8 +633,13 @@ namespace WalkingFriend
             else if (State == PetState.Ceiling)
             { look.Sprite = FeatureArt.Ceiling[frame]; look.Left = Dir < 0; }
             else if (State == PetState.Drag) { look.Sprite = FeatureArt.Held[frame]; }
+            else if (Chasing)
+            { look.Sprite = FeatureArt.Chase; look.Sx = look.Sy = 1; look.HopY = (float)(-Math.Abs(Math.Sin(animT * 13)) * 3 * S); }
         }
         internal double FeatureJitterX { get { return lookJitterX; } }
+        // Running after the fish: a short fast dash now and then, and whenever the friend follows the cursor.
+        private double chaseUntil = -1, nextChase, chaseClock;
+        internal bool Chasing { get { return State == PetState.Walk && chaseClock < chaseUntil; } }
     }
 
     internal sealed partial class App
@@ -679,7 +692,7 @@ namespace WalkingFriend
                 Pet p = pet ?? windows.Select(a => a.Pet).FirstOrDefault(); if (p != null) p.Feed(this);
             }));
             var demo = new ToolStripMenuItem("동작 바로 보기");
-            foreach (var pair in new[] { new[] { "앉아서 쉬기", "sit" }, new[] { "배고플 때 우는 모습", "cry" }, new[] { "폴짝 뛰기", "hop" }, new[] { "슬라이딩", "slide" }, new[] { "어질어질", "dizzy" }, new[] { "헬리콥터 낙하", "fall" }, new[] { "벽 타기", "wall" }, new[] { "천장 타기", "ceiling" }, new[] { "창 타기", "window" } })
+            foreach (var pair in new[] { new[] { "앉아서 쉬기", "sit" }, new[] { "배고플 때 우는 모습", "cry" }, new[] { "폴짝 뛰기", "hop" }, new[] { "슬라이딩", "slide" }, new[] { "물고기 쫓아가기", "chase" }, new[] { "어질어질", "dizzy" }, new[] { "헬리콥터 낙하", "fall" }, new[] { "벽 타기", "wall" }, new[] { "천장 타기", "ceiling" }, new[] { "창 타기", "window" } })
             {
                 string key = pair[1]; demo.DropDownItems.Add(pair[0], null, delegate { Pet p = pet ?? windows.Select(a => a.Pet).FirstOrDefault(); if (p != null) p.Demonstrate(this, key); });
             }
