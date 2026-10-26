@@ -11,7 +11,7 @@ namespace WalkingFriend
     internal static class FeatureArt
     {
         internal static Sprite TouchCry, IdleCry, Sit, Slide, Chase, Dizzy;
-        internal static Sprite[] Helicopter, Climb, Ceiling, Held, Eating;
+        internal static Sprite[] Helicopter, Climb, ClimbDown, Ceiling, Held, Eating;
         internal static int CeilingTopInset;
         internal static int CeilingContactHeight { get { return Ceiling[0].H - CeilingTopInset; } }
         internal static void Load()
@@ -23,7 +23,7 @@ namespace WalkingFriend
             Slide = LoadFit("slide.png", w, h, true);
             Dizzy = LoadFit("dizzy.png", w, h, false);
             Chase = LoadFit("chase.png", (int)Math.Round(w * 1.4), h, true);
-            Climb = new Sprite[12]; Ceiling = new Sprite[12]; Held = new Sprite[12];
+            Climb = new Sprite[12]; ClimbDown = new Sprite[12]; Ceiling = new Sprite[12]; Held = new Sprite[12];
             using (Bitmap raw = Raw("climb.png"))
             using (Bitmap baseImage = Fit(raw, w - 8, (int)Math.Round(h * .76)))
             {
@@ -33,9 +33,10 @@ namespace WalkingFriend
                     Bitmap ceiling = (Bitmap)up.Clone();
                     ceiling.RotateFlip(RotateFlipType.RotateNoneFlipY);
                     Ceiling[i] = ToSprite(ceiling, false);
-                    // Head up, with the whole underside against the wall.
-                    up.RotateFlip(RotateFlipType.RotateNoneFlipX); up.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                    Climb[i] = ToSprite(up, false);
+                    // Nose up, with the whole underside against the wall; climbing down turns the nose to the floor.
+                    up.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    Bitmap down = (Bitmap)up.Clone(); down.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    Climb[i] = ToSprite(up, false); ClimbDown[i] = ToSprite(down, false);
                 }
             }
             using (Bitmap raw = Raw("held.png"))

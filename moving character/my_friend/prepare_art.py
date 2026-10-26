@@ -20,7 +20,7 @@ POSES = {
     "sit.png": ("sit.PNG", False),             # 앉아 쉬기
     "eat2.png": ("drinking2.PNG", False),      # 간식 먹기
     "slide.png": ("lying.PNG", False),         # 미끄러지기 (머리가 왼쪽)
-    "climb.png": ("climb.PNG", True),          # 벽·천장 타기 (머리가 오른쪽이 되게 뒤집기)
+    "climb.png": ("climb.PNG", False),         # 벽·천장 타기 (비행기 앞이 오른쪽)
     "helicopter.png": ("falling.PNG", False),  # 떨어지기·던져졌을 때
     "cry_touch.png": ("crying1.PNG", False),   # 눌렀을 때 울기
     "cry_idle.png": ("crying2.PNG", False),    # 배고플 때 울기

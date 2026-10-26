@@ -80,8 +80,9 @@ namespace WalkingFriend
                     if ((look.Secret & 2) != 0)
                     {
                         float body = Sprites.Walk1.H;
-                        float y = -height + body * (height > body * 1.15f ? .74f : .44f);
-                        g.TranslateTransform(-Sprites.Walk1.W * .045f, 0);
+                        // Placed over the eyes of the falling picture.
+                        float y = -height + body * (height > body * 1.15f ? .74f : .52f);
+                        g.TranslateTransform(-Sprites.Walk1.W * .115f, 0);
                         g.DrawLine(outline, -Sprites.Walk1.W * .30f, y, Sprites.Walk1.W * .30f, y);
                         for (int side = -1; side <= 1; side += 2)
                         {

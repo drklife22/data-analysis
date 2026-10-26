@@ -627,7 +627,7 @@ namespace WalkingFriend
             { look.Sprite = FeatureArt.Slide; look.Sy = .82f; look.HopY = (float)(Math.Sin(animT * 20) * .6 * S); }
             else if (State == PetState.Wall || State == PetState.WindowClimb || State == PetState.Climb)
             {
-                look.Sprite = FeatureArt.Climb[frame];
+                look.Sprite = (State == PetState.Wall && wallDescending ? FeatureArt.ClimbDown : FeatureArt.Climb)[frame];
                 look.Left = State == PetState.WindowClimb ? approachSide > 0 : State == PetState.Climb ? climbDir < 0 : wallSide < 0;
             }
             else if (State == PetState.Ceiling)
