@@ -346,7 +346,7 @@ namespace WalkingFriend
             if (State == PetState.Wall || State == PetState.Ceiling || State == PetState.WindowClimb) { ClearAttachments(); SetState(PetState.Falling, w); return; }
             if (!FriendData.Current.TrySnack())
             { Bubble = "배가 꽉 찼어! 조금 출출해지면 먹자"; BubbleUntil = w.Now + 3; return; }
-            AfterReaction = PetState.Walk; extraDuration = 3;
+            AfterReaction = PetState.Walk; extraDuration = 6;
             SetState(PetState.Eating, w); Bubble = "냠냠! 고마워"; BubbleUntil = w.Now + 3;
             mouseGrace = w.Now + 5; DelayIdle(w);
         }
@@ -616,7 +616,7 @@ namespace WalkingFriend
             else if (State == PetState.IdleCry)
             { look.Sprite = FriendData.Current.Hungry ? FeatureArt.IdleCry : FeatureArt.Sit; look.Left = false; look.Sy = (float)(1 + Math.Sin(StateT * 8) * .012); if (FriendData.Current.Hungry) lookJitterX = Math.Sin(StateT * 21) * .45 * S; }
             else if (State == PetState.Resting || State == PetState.Eating)
-            { look.Sprite = State == PetState.Eating ? FeatureArt.Eating[(int)(StateT / .7) % 4] : FeatureArt.Sit; look.Sy = (float)(1 + Math.Sin(animT * 2.0) * .012); }
+            { look.Sprite = State == PetState.Eating ? FeatureArt.Eating[(int)(StateT / 1.5) % 4] : FeatureArt.Sit; look.Sy = (float)(1 + Math.Sin(animT * 2.0) * .012); }
             else if (State == PetState.Hop)
             {
                 look.Sprite = Sprites.WalkingFrame(animT); double t = StateT / extraDuration;
