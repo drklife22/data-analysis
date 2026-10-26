@@ -1,0 +1,6 @@
+전주치이카와 2.06 검증
+companion: 91 PASS
+regression: 89 PASS
+startup: 6 PASS
+Total: 186 PASS
+Runtime: Mono / X11 virtual display. Native Windows edge-window presentation and click-through need Windows verification. Gradient textures, palettes, lifecycle, UI controls and behavior validated.
