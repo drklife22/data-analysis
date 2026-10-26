@@ -86,7 +86,7 @@ namespace WalkingFriend
                 r.Controls.Add(number); var unit = FriendUI.Label("배"); unit.Margin = new Padding(4, 5, 4, 0); r.Controls.Add(unit); panel.Controls.Add(r); return number;
             };
             var speed = speedRow("걷기 · 기어오르기", "walkSpeed", o.Speed, 2m);
-            var fallSpeed = speedRow("헬리콥터 낙하", "fallSpeed", o.FallSpeed, 3m);
+            var fallSpeed = speedRow("둥실둥실 내려오기", "fallSpeed", o.FallSpeed, 3m);
             var slideSpeed = speedRow("슬라이딩", "slideSpeed", o.SlideSpeed, 3m);
             var delayRow = new FlowLayoutPanel { AutoSize = true, WrapContents = false };
             delayRow.Controls.Add(FriendUI.Label("슬라이딩 반응 대기"));
@@ -96,7 +96,7 @@ namespace WalkingFriend
             var clickMode = new ComboBox { Name = "clickMode", DropDownStyle = ComboBoxStyle.DropDownList, Width = 412, Margin = new Padding(4) };
             clickMode.Items.AddRange(new object[] { "눌리기 · 폴짝 뛰기 (배고프면 울기도)", "무작위 반응 (배고프면 울기도)", "눌리기만", "배고프면 울기 · 배부르면 눌리기", "폴짝 뛰기만", "클릭 반응 끄기" });
             clickMode.SelectedIndex = (int)o.ClickMode; panel.Controls.Add(clickMode);
-            panel.Controls.Add(FriendUI.Label("살짝 놓으면 헬리콥터, 휙 던지면 날아간 뒤 내려와요.\n저장한 속도와 클릭 반응은 다음 실행에도 유지돼요."));
+            panel.Controls.Add(FriendUI.Label("살짝 놓으면 둥실둥실, 휙 던지면 날아간 뒤 내려와요.\n저장한 속도와 클릭 반응은 다음 실행에도 유지돼요."));
             var row = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 54, Padding = new Padding(18, 3, 18, 3), WrapContents = false };
             var save = FriendUI.Button("저장", delegate
             {

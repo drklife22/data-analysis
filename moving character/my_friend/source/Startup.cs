@@ -22,7 +22,7 @@ namespace WalkingFriend
             var items = new Dictionary<string, Sprite>();
             items.Add("walk", Sprites.Walk1); items.Add("nap", Sprites.Nap); items.Add("wake", Sprites.Wake); items.Add("dance", Sprites.Dance);
             for (int i = 0; i < Sprites.WalkFrames.Length; i++) items.Add("walk/" + i, Sprites.WalkFrames[i]);
-            items.Add("touch", FeatureArt.TouchCry); items.Add("weep", FeatureArt.IdleCry); items.Add("sit", FeatureArt.Sit); items.Add("slide", FeatureArt.Slide); items.Add("chase", FeatureArt.Chase);
+            items.Add("touch", FeatureArt.TouchCry); items.Add("weep", FeatureArt.IdleCry); items.Add("sit", FeatureArt.Sit); items.Add("slide", FeatureArt.Slide); items.Add("chase", FeatureArt.Chase); items.Add("dizzy", FeatureArt.Dizzy);
             Add(items, "rotor", FeatureArt.Helicopter); Add(items, "climb", FeatureArt.Climb); Add(items, "ceiling", FeatureArt.Ceiling); Add(items, "held", FeatureArt.Held); Add(items, "eat", FeatureArt.Eating);
             for (int i = 0; i < Sprites.StopFrames.Length; i++) for (int j = 1; j < 8; j++)
             { items.Add("stop/" + i + "/" + j, Sprites.StopFrames[i][j]); items.Add("start/" + i + "/" + j, Sprites.StartFrames[i][j]); }
@@ -76,7 +76,7 @@ namespace WalkingFriend
                 }
                 Sprites.Scale = dpi; Sprites.Walk1 = sprites["walk"]; Sprites.Walk2 = Sprites.Walk1; Sprites.Nap = sprites["nap"]; Sprites.Wake = sprites["wake"]; Sprites.Dance = sprites["dance"];
                 Sprites.WalkFrames = Read(sprites, "walk", 12);
-                FeatureArt.TouchCry = sprites["touch"]; FeatureArt.IdleCry = sprites["weep"]; FeatureArt.Sit = sprites["sit"]; FeatureArt.Slide = sprites["slide"]; FeatureArt.Chase = sprites["chase"];
+                FeatureArt.TouchCry = sprites["touch"]; FeatureArt.IdleCry = sprites["weep"]; FeatureArt.Sit = sprites["sit"]; FeatureArt.Slide = sprites["slide"]; FeatureArt.Chase = sprites["chase"]; FeatureArt.Dizzy = sprites["dizzy"];
                 FeatureArt.Helicopter = Read(sprites, "rotor", 24); FeatureArt.Climb = Read(sprites, "climb", 12); FeatureArt.Ceiling = Read(sprites, "ceiling", 12); FeatureArt.Held = Read(sprites, "held", 12); FeatureArt.Eating = Read(sprites, "eat", 4);
                 FeatureArt.CeilingTopInset = FeatureArt.Bounds(FeatureArt.Ceiling[0].Right).Top;
                 Sprites.StopFrames = new Sprite[12][]; Sprites.StartFrames = new Sprite[12][];

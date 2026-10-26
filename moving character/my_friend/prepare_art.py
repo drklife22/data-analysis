@@ -25,6 +25,7 @@ POSES = {
     "cry_touch.png": ("crying1.PNG", False),   # 눌렀을 때 울기
     "cry_idle.png": ("crying2.PNG", False),    # 배고플 때 울기
     "held.png": ("teasing.PNG", False),        # 마우스로 들어 올렸을 때
+    "dizzy.png": ("dizzy.PNG", False),         # 어질어질
     "chase.png": ("chasing.PNG", False),       # 물고기 쫓아 달리기 (왼쪽을 보고 있음)
 }
 
