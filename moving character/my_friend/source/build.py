@@ -20,7 +20,7 @@ else:
     raise SystemExit("Install Mono mcs, or build on Windows with .NET Framework 4.x.")
 # 첫 번째 빌드에서 그림을 미리 계산한 prepared-sprites.bin을 만든 뒤, 그것을 넣어 다시 빌드하면 시작이 빨라집니다.
 prepared = "--no-prepared" not in sys.argv
-exe = output / "걸어다니는친구.exe"
+exe = output / "마루는 강쥐.exe"
 args = compiler + ["-target:winexe", "-optimize+", "-platform:anycpu", "-out:" + str(exe),
                    "-win32icon:" + str(project / "assets/friend.ico")] + references
 for path in sorted((project / "assets").iterdir()):

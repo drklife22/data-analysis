@@ -104,7 +104,7 @@ namespace WalkingFriend
             if (LogPath == null)
             {
                 foreach (string dir in new[] { AppDomain.CurrentDomain.BaseDirectory, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "걸어다니는친구") })
-                    try { Directory.CreateDirectory(dir); string p = Path.Combine(dir, "걸어다니는친구_실행기록.txt"); File.WriteAllText(p, "걸어다니는 친구 1.0\r\n"); LogPath = p; break; } catch { }
+                    try { Directory.CreateDirectory(dir); string p = Path.Combine(dir, "걸어다니는친구_실행기록.txt"); File.WriteAllText(p, "마루는 강쥐 1.0\r\n"); LogPath = p; break; } catch { }
             }
             try { if (LogPath != null) File.AppendAllText(LogPath, DateTime.Now.ToString("HH:mm:ss.fff") + " " + phase + Environment.NewLine); } catch { }
         }
@@ -112,7 +112,7 @@ namespace WalkingFriend
         {
             string phase = Phase; FeatureLog.Write(error);
             Mark("실패: " + phase + "\r\n" + error);
-            try { MessageBox.Show("친구를 화면에 표시하지 못했어.\n\n멈춘 부분: " + phase + "\n" + error.Message + "\n\n실행 기록: " + (LogPath ?? "저장하지 못함"), "걸어다니는 친구 · 실행 확인", MessageBoxButtons.OK, MessageBoxIcon.Error); } catch { }
+            try { MessageBox.Show("친구를 화면에 표시하지 못했어.\n\n멈춘 부분: " + phase + "\n" + error.Message + "\n\n실행 기록: " + (LogPath ?? "저장하지 못함"), "마루는 강쥐 · 실행 확인", MessageBoxButtons.OK, MessageBoxIcon.Error); } catch { }
         }
     }
 

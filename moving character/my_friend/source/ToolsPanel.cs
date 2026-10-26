@@ -35,7 +35,7 @@ namespace WalkingFriend
         {
             if (TimerUtc == DateTime.MinValue || DateTime.UtcNow < TimerUtc) return;
             TimerUtc = DateTime.MinValue; Save();
-            var notice = new HourlyNotice(app.TrayIconImage); notice.Text = "걸어다니는 친구 · 타이머";
+            var notice = new HourlyNotice(app.TrayIconImage); notice.Text = "마루는 강쥐 · 타이머";
             notice.SetMessage(string.IsNullOrWhiteSpace(TimerText) ? "설정한 시간이 됐어!" : TimerText); notice.Show();
             app.Announce(TimerText);
         }
@@ -58,7 +58,7 @@ namespace WalkingFriend
     {
         internal PlaySettingsForm(App app)
         {
-            FriendUI.Setup(this, app.TrayIconImage); Text = "걸어다니는 친구 · 움직임과 반응"; ClientSize = new Size(480, 640);
+            FriendUI.Setup(this, app.TrayIconImage); Text = "마루는 강쥐 · 움직임과 반응"; ClientSize = new Size(480, 640);
             var panel = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, WrapContents = false, AutoScroll = true, Padding = new Padding(18, 12, 18, 12) };
             Controls.Add(panel);
             panel.Controls.Add(FriendUI.Label("친구가 어떻게 놀지 골라줘"));
@@ -105,7 +105,7 @@ namespace WalkingFriend
                 o.Escape = escape.Checked; o.Follow = follow.Checked; o.Focus = focus.Checked; o.WorkFocus = work.Checked; o.Fullscreen = full.Checked;
                 o.ShowAffinity = affinity.Checked;
                 o.Speed = (double)speed.Value; o.FallSpeed = (double)fallSpeed.Value; o.SlideSpeed = (double)slideSpeed.Value; o.ClickMode = (ClickReaction)clickMode.SelectedIndex; o.EscapeDelay = (double)escapeDelay.Value;
-                if (!o.Save()) MessageBox.Show(this, "설정을 파일에 저장하지 못했어. 지금 실행 중에는 적용돼.", "걸어다니는 친구"); Close();
+                if (!o.Save()) MessageBox.Show(this, "설정을 파일에 저장하지 못했어. 지금 실행 중에는 적용돼.", "마루는 강쥐"); Close();
             });
             save.Name = "save"; row.Controls.Add(save); var cancel = FriendUI.Button("취소", delegate { Close(); }); row.Controls.Add(cancel); Controls.Add(row); AcceptButton = save; CancelButton = cancel;
         }
@@ -120,7 +120,7 @@ namespace WalkingFriend
         private DateTime notesChanged;
         internal FriendPanel(App app)
         {
-            FriendUI.Setup(this, app.TrayIconImage); Text = "걸어다니는 친구 · 오늘의 작은 도우미"; ClientSize = new Size(510, 495);
+            FriendUI.Setup(this, app.TrayIconImage); Text = "마루는 강쥐 · 오늘의 작은 도우미"; ClientSize = new Size(510, 495);
             var tabs = new TabControl { Dock = DockStyle.Fill, Padding = new Point(12, 7) }; Controls.Add(tabs); AddLifeTab(tabs, app);
             var todo = new TabPage("할 일") { BackColor = BackColor, Padding = new Padding(12) }; tabs.TabPages.Add(todo);
             var layout = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 1, RowCount = 3 }; layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100)); layout.RowStyles.Add(new RowStyle(SizeType.AutoSize)); todo.Controls.Add(layout);
@@ -168,6 +168,6 @@ namespace WalkingFriend
             else { int seconds = Math.Max(0, (int)Math.Ceiling((d - DateTime.UtcNow).TotalSeconds)); remaining.Text = string.Format("{0:00}:{1:00} 남았어", seconds / 60, seconds % 60); }
         }
         private void SaveOrWarn()
-        { if (!FriendData.Current.Save()) MessageBox.Show(this, "파일에 저장하지 못했어. 저장 위치의 쓰기 권한을 확인해 줘.", "걸어다니는 친구"); }
+        { if (!FriendData.Current.Save()) MessageBox.Show(this, "파일에 저장하지 못했어. 저장 위치의 쓰기 권한을 확인해 줘.", "마루는 강쥐"); }
     }
 }

@@ -82,7 +82,7 @@ namespace WalkingFriend
         }
         internal bool Save()
         {
-            string text = "; 걸어다니는 친구 움직임 설정\r\n";
+            string text = "; 마루는 강쥐 움직임 설정\r\n";
             foreach (var f in typeof(PlayOptions).GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic))
                 if (f.FieldType == typeof(bool)) text += f.Name + "=" + ((bool)f.GetValue(this) ? "1" : "0") + "\r\n";
             text += "Speed=" + Speed.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture) + "\r\n";
