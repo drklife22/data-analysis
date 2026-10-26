@@ -33,8 +33,8 @@ namespace WalkingFriend
                     Bitmap ceiling = (Bitmap)up.Clone();
                     ceiling.RotateFlip(RotateFlipType.RotateNoneFlipY);
                     Ceiling[i] = ToSprite(ceiling, false);
-                    // Head up, with the paws and the whole underside against the wall.
-                    up.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    // Head up, with the whole underside against the wall.
+                    up.RotateFlip(RotateFlipType.RotateNoneFlipX); up.RotateFlip(RotateFlipType.Rotate270FlipNone);
                     Climb[i] = ToSprite(up, false);
                 }
             }
@@ -69,8 +69,8 @@ namespace WalkingFriend
                 }
             }
             Eating = new Sprite[4];
-            Sprite cup = LoadFit("eat1.png", w, h, false), sip = LoadFit("eat2.png", w, h, false);
-            for (int i = 0; i < 4; i++) Eating[i] = i % 2 == 0 ? cup : sip;
+            Sprite sip = LoadFit("eat2.png", w, h, false);
+            for (int i = 0; i < 4; i++) Eating[i] = sip;
         }
         private static Bitmap Raw(string name)
         {

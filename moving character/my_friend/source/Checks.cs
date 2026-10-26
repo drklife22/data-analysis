@@ -23,7 +23,7 @@ namespace WalkingFriend
         public List<Rectangle> Areas { get; private set; }
         public Random Rng { get; private set; }
         public double Now { get; set; }
-        internal CheckWorld() { Areas = new List<Rectangle> { new Rectangle(0, 0, 640, 400) }; Rng = new Random(271); }
+        internal CheckWorld(int width = 640) { Areas = new List<Rectangle> { new Rectangle(0, 0, width, 400) }; Rng = new Random(271); }
         internal void Step(Pet p, double secs)
         { for (int i = 0; i < (int)Math.Ceiling(secs / .02); i++) { Now += .02; p.Update(this, .02, new List<Pet> { p }, DesktopSurfaces.Mouse.X); } }
     }

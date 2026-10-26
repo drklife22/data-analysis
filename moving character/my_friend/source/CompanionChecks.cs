@@ -97,9 +97,11 @@ namespace WalkingFriend
             var positions = new Dictionary<Pet, PointF> { { fastA, new PointF(200, 400) }, { fastB, new PointF(450, 400) } };
             App.ResolveCompanionContacts(world, new List<Pet> { fastA, fastB }, positions);
             Check(fastA.X < fastB.X && !Overlap(fastA, fastB, world.Now), "fast slides cannot tunnel through each other");
-            var crowded = Enumerable.Range(0, 7).Select(i => FloorPet(world, 320, PetState.Walk)).ToList();
-            App.ResolveCompanionContacts(world, crowded, null);
-            bool clear = true; for (int i = 0; i < crowded.Count; i++) for (int j = i + 1; j < crowded.Count; j++) clear &= !Overlap(crowded[i], crowded[j], world.Now);
+            // Seven of the larger friends need more floor than the default 640px test screen.
+            var crowdWorld = new CheckWorld(1280);
+            var crowded = Enumerable.Range(0, 7).Select(i => FloorPet(crowdWorld, 640, PetState.Walk)).ToList();
+            App.ResolveCompanionContacts(crowdWorld, crowded, null);
+            bool clear = true; for (int i = 0; i < crowded.Count; i++) for (int j = i + 1; j < crowded.Count; j++) clear &= !Overlap(crowded[i], crowded[j], crowdWorld.Now);
             Check(clear, "seven overlapping friends settle into separate spaces");
             var dragged = FloorPet(world, 280, PetState.Drag); var standing = FloorPet(world, 281, PetState.Pause);
             App.ResolveCompanionContacts(world, new List<Pet> { dragged, standing }, null);

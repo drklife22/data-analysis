@@ -2971,6 +2971,9 @@ namespace WalkingFriend
 
 		public const float StoredToMini = 0.333333343f;
 
+		// The new character has a smaller body inside the frame than the round original, so every picture is drawn larger.
+		public const float ArtScale = 1.4f;
+
 		internal static Sprite[] WalkFrames;
 
 		internal static Sprite[][] StopFrames;
@@ -2981,7 +2984,7 @@ namespace WalkingFriend
 		{
 			if (StartupArt.TryLoad(dpiScale)) return;
 			Scale = dpiScale;
-			float f = 0.333333343f * dpiScale;
+			float f = 0.333333343f * dpiScale * ArtScale;
 			Walk1 = Make("walk1.png", f, true);
 			Walk2 = Make("walk1.png", f, true);
 			Nap = Make("wake.png", f);
